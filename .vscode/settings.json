@@ -1,3 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "disabled"
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "yaml.schemas": {
+        "file:///Users/diego/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+        "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json": "file:///Users/diego/code/pagopa/devops-team/devops-springboot-gitlab-workflow/.devops/deploy-pipelines.yml"
+    }
 }
