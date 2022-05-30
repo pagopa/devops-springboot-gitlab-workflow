@@ -124,14 +124,14 @@ stages:
               publishLocation: 'pipeline'
 
   - stage: 'Deploy'
-    displayName: 'Deploy to ${{ variables.environment }}/${{ variables.deployNamespace }} K8S'
+    displayName: 'Deploy to ${{ variables.environment }}/$(deployNamespace) K8S'
     dependsOn: ['Publish_artifact_Helm']
     condition: and(succeeded(), eq(variables.isToDeploy, true))
     variables:
       pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
     jobs:
-      - deployment: 'Deploy_to_${{ variables.environment }}/${{ variables.deployNamespace }}'
-        displayName: 'Deploy to ${{ variables.environment }}/${{ variables.deployNamespace }} K8S'
+      - deployment: 'Deploy_to_${{ variables.environment }}/$(deployNamespace)'
+        displayName: 'Deploy to ${{ variables.environment }}/$(deployNamespace) K8S'
         pool:
           name: $(selfHostedAgentPool)
         environment: '$(environment)'
