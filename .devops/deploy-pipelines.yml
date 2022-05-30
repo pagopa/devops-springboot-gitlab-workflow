@@ -108,7 +108,7 @@ stages:
 
   - stage: 'Publish_artifact_helm'
     displayName: 'Publish_artifact_Helm'
-    dependsOn: Build
+    dependsOn: Release
     jobs:
       - job: Publish_artifact_helm
         displayName: Publish_artifact_helm
