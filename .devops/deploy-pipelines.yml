@@ -1,6 +1,12 @@
 # Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
+parameters:
+  - name: 'executeBuild'
+    displayName: 'Launch maven and docker build'
+    type: boolean
+    default: true
+
 trigger:
   branches:
     include:
@@ -72,7 +78,7 @@ stages:
   - stage: 'Build'
     displayName: 'Build_and_Publish_to_${{ variables.environment }}'
     dependsOn: Release
-    condition: and(succeeded(), eq(variables.isToDeploy, true))
+    condition: and(succeeded(), eq(variables.isToDeploy, true), ${{ parameters.executeBuild }})
     variables:
       pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
     jobs:
@@ -92,36 +98,72 @@ stages:
                 $(Build.BuildId)
                 latest
                 $(pomversion)
+          # - task: PublishPipelineArtifact@1
+          #   displayName: 'Publish Artifact manifests'
+          #   condition: and(succeeded(), eq(variables.isToDeploy, true))
+          #   inputs:
+          #     targetPath: '$(Build.Repository.LocalPath)/manifests'
+          #     artifact: 'manifests'
+          #     publishLocation: 'pipeline'
+
+  - stage: 'Publish_artifact_helm'
+    displayName: 'Publish_artifact_Helm'
+    dependsOn: Build
+    jobs:
+      - job: Publish_artifact_helm
+        displayName: Publish_artifact_helm
+        pool:
+          vmImage: $(vmImageNameDefault)
+        steps:
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Artifact manifests'
-            condition: and(succeeded(), eq(variables.isToDeploy, true))
+            condition: succeeded()
             inputs:
-              targetPath: '$(Build.Repository.LocalPath)/manifests'
-              artifact: 'manifests'
+              targetPath: '$(Build.Repository.LocalPath)/helm'
+              artifact: 'helm'
               publishLocation: 'pipeline'
 
-  # - stage: 'Deploy'
-  #   displayName: 'Deploy to ${{ variables.environment }} K8S'
-  #   dependsOn: ['Release', 'Build']
-  #   condition: and(succeeded(), eq(variables.isToDeploy, true))
-  #   variables:
-  #     pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
-  #   jobs:
-  #     - deployment: 'Deploy_to_${{ variables.environment }}'
-  #       displayName: 'Deploy to ${{ variables.environment }} K8S'
-  #       pool:
-  #         name: $(selfHostedAgentPool)
-  #       environment: '$(environment)'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #               - download: none
-  #               - task: DownloadPipelineArtifact@2
-  #                 inputs:
-  #                   buildType: 'current'
-  #                   artifactName: 'manifests'
-  #                   targetPath: '$(Pipeline.Workspace)/manifests'
+  - stage: 'Deploy'
+    displayName: 'Deploy to ${{ variables.environment }}/${{ deployNamespace }} K8S'
+    dependsOn: ['Publish_artifact_Helm']
+    condition: and(succeeded(), eq(variables.isToDeploy, true))
+    variables:
+      pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
+    jobs:
+      - deployment: 'Deploy_to_${{ variables.environment }}/${{ deployNamespace }}'
+        displayName: 'Deploy to ${{ variables.environment }}/${{ deployNamespace }} K8S'
+        pool:
+          name: $(selfHostedAgentPool)
+        environment: '$(environment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: none
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    buildType: 'current'
+                    artifactName: 'helm'
+                    targetPath: '$(Pipeline.Workspace)/helm'
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade
+                  inputs:
+                    kubernetesServiceEndpoint: ${{ variables.kubernetesServiceConnection }}
+                    namespace: '$(deployNamespace)'
+                    command: upgrade
+                    chartType: filepath
+                    chartPath: $(Pipeline.Workspace)/helm
+                    chartName: $(K8S_IMAGE_REPOSITORY_NAME)
+                    releaseName: $(K8S_IMAGE_REPOSITORY_NAME)
+                    valueFile: "$(Pipeline.Workspace)/helm/values-${{ lower(variables.environment) }}.yaml"
+                    install: true
+                    waitForExecution: true
+                    arguments: "--timeout 2m0s"
+                # - task: DownloadPipelineArtifact@2
+                #   inputs:
+                #     buildType: 'current'
+                #     artifactName: 'manifests'
+                #     targetPath: '$(Pipeline.Workspace)/manifests'
 
   #               - task: Bash@3
   #                 displayName: Generate Kustomization
