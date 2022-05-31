@@ -157,6 +157,7 @@ stages:
                     releaseName: $(K8S_IMAGE_REPOSITORY_NAME)
                     valueFile: "$(Pipeline.Workspace)/helm/values-${{ lower(variables.environment) }}.yaml"
                     install: true
+                    updatedependency: true
                     waitForExecution: true
                     arguments: "--timeout 2m0s"
                 # - task: DownloadPipelineArtifact@2
