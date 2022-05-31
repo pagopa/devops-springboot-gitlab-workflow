@@ -145,6 +145,14 @@ stages:
                     buildType: 'current'
                     artifactName: 'helm'
                     targetPath: '$(Pipeline.Workspace)/helm'
+                - task: Bash@3
+                  name: helm_dependency_build
+                  displayName: Helm dependency build
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      helm dep build
+                    failOnStderr: true
                 - task: HelmDeploy@0
                   displayName: Helm upgrade
                   inputs:
@@ -157,7 +165,6 @@ stages:
                     releaseName: $(K8S_IMAGE_REPOSITORY_NAME)
                     valueFile: "$(Pipeline.Workspace)/helm/values-${{ lower(variables.environment) }}.yaml"
                     install: true
-                    updatedependency: true
                     waitForExecution: true
                     arguments: "--timeout 2m0s"
                 # - task: DownloadPipelineArtifact@2
