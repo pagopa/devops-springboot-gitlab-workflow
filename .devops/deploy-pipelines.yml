@@ -149,6 +149,7 @@ stages:
                   name: helm_dependency_build
                   displayName: Helm dependency build
                   inputs:
+                    workingDirectory: '$(Pipeline.Workspace)/helm'
                     targetType: 'inline'
                     script: |
                       helm dep build
