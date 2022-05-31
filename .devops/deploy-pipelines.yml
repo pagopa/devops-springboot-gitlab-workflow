@@ -108,7 +108,7 @@ stages:
 
   - stage: 'Publish_artifact_helm'
     displayName: 'Publish_artifact_Helm'
-    dependsOn: Release
+    dependsOn: ['Release' , 'Build']
     jobs:
       - job: Publish_artifact_helm
         displayName: Publish_artifact_helm
@@ -149,7 +149,7 @@ stages:
                   displayName: Helm upgrade
                   inputs:
                     kubernetesServiceEndpoint: ${{ variables.kubernetesServiceConnection }}
-                    namespace: '$(variables.deployNamespace)'
+                    namespace: '$(deployNamespace)'
                     command: upgrade
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
