@@ -29,6 +29,7 @@ variables:
 
   imageRepository: '$(K8S_IMAGE_REPOSITORY_NAME)'
   deployNamespace: '$(DEPLOY_NAMESPACE)'
+  helmReleaseName : '$(HELM_RELEASE_NAME)'
   settingsXmlROsecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   settingsXmlSecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   isToDeploy: true
@@ -163,8 +164,8 @@ stages:
                     command: upgrade
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
-                    chartName: $(K8S_IMAGE_REPOSITORY_NAME)
-                    releaseName: $(K8S_IMAGE_REPOSITORY_NAME)
+                    chartName: ${{ variables.helmReleaseName }}
+                    releaseName: ${{ variables.helmReleaseName }}
                     valueFile: "$(Pipeline.Workspace)/helm/values-${{ lower(variables.environment) }}.yaml"
                     install: true
                     waitForExecution: true
