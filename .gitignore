@@ -1,6 +1,5 @@
 target/
 helm/charts
-Chart.lock
 
 # Compiled class file
 *.class
