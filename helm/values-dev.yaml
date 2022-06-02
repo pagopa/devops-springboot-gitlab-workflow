@@ -8,6 +8,11 @@ microservice-chart:
     tag: latest
     pullPolicy: Always
 
+  deployment:
+    create: false
+    livenessProbePath: /live
+    readinessProbePath: /ready
+
   ingress:
     create: false
     host: "helm-template.ingress.devopslab.pagopa.it"

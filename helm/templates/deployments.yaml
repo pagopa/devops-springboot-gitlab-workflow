@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-name-microservice-chart
+  name: devops-springboot-gitlab-workflow-microservice-chart
   namespace: idpay
   labels:
     helm.sh/chart: microservice-chart-1.12.0
     app.kubernetes.io/name: microservice-chart
-    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/instance: devops-springboot-gitlab-workflow
     app.kubernetes.io/version: "0.0.0"
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -16,13 +16,13 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: microservice-chart
-      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/instance: devops-springboot-gitlab-workflow
   template:
     metadata:
       labels:
         aadpodidbinding: "idpay-pod-identity"
         app.kubernetes.io/name: microservice-chart
-        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/instance: devops-springboot-gitlab-workflow
     spec:
       automountServiceAccountToken: false
       serviceAccountName: default
@@ -37,16 +37,16 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /live
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: http
+        #   livenessProbe:
+        #     httpGet:
+        #       path: /live
+        #       port: http
+        #   readinessProbe:
+        #     httpGet:
+        #       path: /ready
+        #       port: http
           resources:
             limits:
               cpu: 150m
