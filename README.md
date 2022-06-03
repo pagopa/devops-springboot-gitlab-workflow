@@ -10,3 +10,4 @@ Application written in Spring boot to test pipelines using the gitlab workflow
 
 0.0.1
 0.0.2
+0.0.0
