@@ -2,10 +2,15 @@ name: Release
 
 on:
   # Trigger the workflow on push or pull request,
-  # but only for the main branch 
+  # but only for the main branch
   push:
     branches:
-      - "main"
+      - main
+      - master
+    paths-ignore:
+      - "CODEOWNERS"
+      - "**.md"
+      - ".**"
 
 jobs:
   release:
@@ -19,15 +24,11 @@ jobs:
           fetch-depth: 0
 
       - name: Release
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@v2
         with:
           semantic_version: 18.0.0
           extra_plugins: |
             @semantic-release/release-notes-generator@10.0.3
             @semantic-release/git@10.0.1
-          branches: |
-            [
-              'main'
-            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
