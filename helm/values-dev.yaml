@@ -7,11 +7,12 @@ microservice-chart:
     repository: cstardcommonacr.azurecr.io/devopsspringbootgitlabworkflow
     tag: latest
     pullPolicy: Always
+    port: 8080
+    livenessProbePath: /live
+    readinessProbePath: /ready
 
   deployment:
     create: false
-    livenessProbePath: /live
-    readinessProbePath: /ready
 
   ingress:
     create: false
@@ -32,6 +33,7 @@ microservice-chart:
     allowPrivilegeEscalation: false
 
   service:
+    create: false
     type: ClusterIP
     port: 8080
 
