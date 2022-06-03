@@ -1,0 +1,58 @@
+# Source: devops-springboot-gitlab-workflow/charts/microservice-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-springboot-gitlab-workflow-microservice-chart
+  namespace: idpay
+  labels:
+    helm.sh/chart: microservice-chart-1.13.0
+    app.kubernetes.io/name: microservice-chart
+    app.kubernetes.io/instance: devops-springboot-gitlab-workflow
+    app.kubernetes.io/version: "0.0.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: microservice-chart
+      app.kubernetes.io/instance: devops-springboot-gitlab-workflow
+  template:
+    metadata:
+      labels:
+        aadpodidbinding: "idpay-pod-identity"
+        app.kubernetes.io/name: microservice-chart
+        app.kubernetes.io/instance: devops-springboot-gitlab-workflow
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: default
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: microservice-chart
+          securityContext:
+            allowPrivilegeEscalation: false
+          image: "cstardcommonacr.azurecr.io/devopsspringbootgitlabworkflow:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http-mchart-svc
+              containerPort: 8080
+              protocol: TCP
+        #   livenessProbe:
+        #     httpGet:
+        #       path: /live
+        #       port: http
+        #   readinessProbe:
+        #     httpGet:
+        #       path: /ready
+        #       port: http
+          resources:
+            limits:
+              cpu: 150m
+              memory: 128Mi
+            requests:
+              cpu: 40m
+              memory: 96Mi
+          env:
+      volumes:
