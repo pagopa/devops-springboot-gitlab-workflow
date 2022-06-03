@@ -21,8 +21,7 @@ jobs:
       - name: Release
         uses: cycjimmy/semantic-release-action@v2
         with:
-          branch: release-dev
-          semantic_version: 19.0.2
+          semantic_version: 18.0.0
           extra_plugins: |
             @semantic-release/release-notes-generator@10.0.3
             @semantic-release/git@10.0.1
