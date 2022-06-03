@@ -6,10 +6,6 @@ on:
   push:
     branches:
       - "release-dev"
-    paths-ignore:
-      - "CODEOWNERS"
-      - "**.md"
-      - ".**"
 
 jobs:
   release:
