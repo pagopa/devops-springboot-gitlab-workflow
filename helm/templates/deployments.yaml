@@ -36,7 +36,7 @@ spec:
           image: "cstardcommonacr.azurecr.io/devopsspringbootgitlabworkflow:latest"
           imagePullPolicy: Always
           ports:
-            - name: http
+            - name: http-mchart-svc
               containerPort: 8080
               protocol: TCP
         #   livenessProbe:

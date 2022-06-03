@@ -13,10 +13,10 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 80
+      targetPort: http-mchart-svc
       protocol: TCP
-      name: http
+      name: service
   selector:
     app.kubernetes.io/name: microservice-chart
     app.kubernetes.io/instance: devops-springboot-gitlab-workflow
