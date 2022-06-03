@@ -21,15 +21,15 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v3
         with:
           skip-on-empty: "false"
-          # skip-commit: "true"
-          github-token: ${{ secrets.github_token }}
+          skip-commit: "true"
+          github-token: ${{ secrets.AZURE_DEVOPS_GITHUB_RW }}
           output-file: "false"  
 
       - name: Create Release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.AZURE_DEVOPS_GITHUB_RW }}
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
           release_name: ${{ steps.changelog.outputs.tag }}
