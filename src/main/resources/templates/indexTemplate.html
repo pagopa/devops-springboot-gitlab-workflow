@@ -1,24 +1,12 @@
-<!doctype html>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <title>Hello from PagoPA</title>
-<body style="background: [[${color}]];"></body>
+<body th:style="'background:' + ${color} + ';'"></body>
 <div style="color: #e4e4e4;
     text-align:  center;
     height: 90px;
     vertical-align:  middle;">
 
-    <h1>[[${message}]]</h1>
-
-</div>
-
-
-<!doctype html>
-<title>Hello from PagoPA</title>
-<body style="background: [[${ color }}]];"></body>
-<div style="color: #e4e4e4;
-    text-align:  center;
-    height: 90px;
-    vertical-align:  middle;">
-
-  <h1 th:text="*{name} ? : 'World'"></h1>
+  <h1 style="font-size: 5em;"  th:text="${hostname}"></h1>
 
 </div>
