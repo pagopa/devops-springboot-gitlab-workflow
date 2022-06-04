@@ -16,6 +16,12 @@ public class AppController {
     @Value("${MY_ENV_1:}")
     private String myEnv1;
 
+    @GetMapping(path = "", produces=MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> mainApp()
+    {
+        return root();
+    }
+
     @GetMapping(path = "/", produces=MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> root()
     {
