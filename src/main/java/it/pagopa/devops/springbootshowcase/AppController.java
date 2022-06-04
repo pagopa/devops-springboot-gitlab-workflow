@@ -42,25 +42,4 @@ public class AppController {
         });
         return map;
     }
-
-    /*
-     * Liveness & Readiness
-     */
-    @GetMapping(path = "/live", produces=MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public Map<String, Boolean> live()
-    {
-        HashMap<String, Boolean> map = new HashMap<>();
-        map.put("live", true);
-        return map;
-    }
-
-    @GetMapping(path = "/ready", produces=MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public Map<String, Boolean> ready()
-    {
-        HashMap<String, Boolean> map = new HashMap<>();
-        map.put("ready", true);
-        return map;
-    }
 }
