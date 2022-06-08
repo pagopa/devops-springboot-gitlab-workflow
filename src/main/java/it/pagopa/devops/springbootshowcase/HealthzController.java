@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/healthz")
+@RequestMapping("/status")
 public class HealthzController {
 
     @GetMapping(path = "", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Map<String, String> mainHealthz()
+    public Map<String, String> mainStatus()
     {
         return root();
     }
@@ -26,7 +26,7 @@ public class HealthzController {
     public Map<String, String> root()
     {
         HashMap<String, String> map = new HashMap<>();
-        map.put("healthz", "ok");
+        map.put("status", "ok");
         return map;
     }
 
