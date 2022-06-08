@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  devops-springboot-gitlab-workflow:
+  devops-java-springboot-color:
     image: "ghcr.io/pagopa/devops-springboot-gitlab-workflow:latest"
     # build:
     #   dockerfile: ./Dockerfile
