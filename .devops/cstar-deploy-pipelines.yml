@@ -32,7 +32,7 @@ variables:
   helmReleaseName : '$(HELM_RELEASE_NAME)'
   settingsXmlROsecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   settingsXmlSecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
-  isToDeploy: true
+  canDeploy: true
 
   # If the branch is develop or a feature branch starting with CEN, deploy in DEV environment
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release-dev') }}:
@@ -64,9 +64,9 @@ variables:
     selfHostedAgentPool: $(DEV_AGENT_POOL)
 
 stages:
-  - stage: Release
+  - stage: 'pom_version'
     displayName: Release
-    condition: eq(variables.isToDeploy, true)
+    condition: eq(variables.canDeploy, true)
     jobs:
       - job: POM
         displayName: POM
@@ -76,17 +76,17 @@ stages:
           - task: Bash@3
             displayName: Get POM version
             name: getpomversion
-            condition: and(succeeded(), eq(variables.isToDeploy, true))
+            condition: and(succeeded(), eq(variables.canDeploy, true))
             inputs:
               targetType: 'inline'
               script: |
                 version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
                 echo "##vso[task.setvariable variable=outputpomversion;isOutput=true]$version"
               failOnStderr: true
-  - stage: 'Build'
+
+  - stage: 'build'
     displayName: 'Build_and_Publish_to_${{ variables.environment }}'
-    dependsOn: Release
-    condition: and(succeeded(), eq(variables.isToDeploy, true), ${{ parameters.executeBuild }})
+    dependsOn: 'pom_version'
     variables:
       pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
     jobs:
@@ -96,8 +96,8 @@ stages:
           vmImage: $(vmImageNameDefault)
         steps:
           - task: Docker@2
+            condition: and(succeeded(), ${{ parameters.executeBuild }})
             displayName: 'Publish_image_to_${{ variables.environment }}'
-            condition: succeeded()
             inputs:
               containerRegistry: '$(dockerRegistryServiceConnection)'
               repository: '$(imageRepository)'
@@ -108,15 +108,15 @@ stages:
                 $(pomversion)
           # - task: PublishPipelineArtifact@1
           #   displayName: 'Publish Artifact manifests'
-          #   condition: and(succeeded(), eq(variables.isToDeploy, true))
+          #   condition: and(succeeded(), eq(variables.canDeploy, true))
           #   inputs:
           #     targetPath: '$(Build.Repository.LocalPath)/manifests'
           #     artifact: 'manifests'
           #     publishLocation: 'pipeline'
 
-  - stage: 'Publish_artifact_helm'
+  - stage: 'publish_artifact_helm'
     displayName: 'Publish_artifact_Helm'
-    dependsOn: ['Release']
+    dependsOn: ['build']
     jobs:
       - job: Publish_artifact_helm
         displayName: Publish_artifact_helm
@@ -131,10 +131,10 @@ stages:
               artifact: 'helm'
               publishLocation: 'pipeline'
 
-  - stage: 'Deploy'
+  - stage: 'deploy'
     displayName: 'Deploy to ${{ variables.environment }} K8S'
-    dependsOn: ['Publish_artifact_Helm']
-    condition: and(succeeded(), eq(variables.isToDeploy, true))
+    dependsOn: ['publish_artifact_helm']
+    condition: and(succeeded(), eq(variables.canDeploy, true))
     variables:
       pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
     jobs:
