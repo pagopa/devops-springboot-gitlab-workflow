@@ -1,5 +1,6 @@
 target/
 helm/charts
+logs/
 
 # Compiled class file
 *.class
