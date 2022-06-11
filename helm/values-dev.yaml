@@ -4,19 +4,38 @@ microservice-chart:
   fullnameOverride: ""
 
   image:
-    repository: cstardcommonacr.azurecr.io/devopsspringbootgitlabworkflow
-    tag: latest
+    repository: ghcr.io/pagopa/devops-java-springboot-color
+    tag: 0.6.0
     pullPolicy: Always
-    port: 8080
-    livenessProbePath: /live
-    readinessProbePath: /ready
+
+  livenessProbe:
+    httpGet:
+      path: /status/live
+      port: 8080
+    initialDelaySeconds: 60
+    failureThreshold: 6
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: /status/ready
+      port: 8080
+    initialDelaySeconds: 60
+    failureThreshold: 6
+    periodSeconds: 10
 
   deployment:
-    create: false
+    create: true
+
+  service:
+    create: true
+    type: ClusterIP
+    port: 8080
 
   ingress:
-    create: false
-    host: "helm-template.ingress.devopslab.pagopa.it"
+    create: true
+    host: "dev01.idpay.internal.dev.cstar.pagopa.it"
+    path: /idpay/testbar/(.*)
 
   serviceAccount:
     create: false
@@ -32,20 +51,16 @@ microservice-chart:
   securityContext:
     allowPrivilegeEscalation: false
 
-  service:
-    create: false
-    type: ClusterIP
-    port: 8080
-
   resources:
     requests:
-      memory: "96Mi"
+      memory: "256Mi"
       cpu: "40m"
     limits:
-      memory: "128Mi"
+      memory: "256Mi"
       cpu: "150m"
 
   autoscaling:
+    enable: true
     minReplica: 1
     maxReplica: 2
     pollingInterval: 30 # seconds
@@ -64,11 +79,11 @@ microservice-chart:
           metricAggregationType: Count
           targetValue: "30"
 
-  # envConfig:
-  #   USER: my-user
+  envConfig:
+    APP: foo
 
-  # envSecret:
-  #   PASS: helm-template-password
+  envSecret:
+    aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
 
   keyvault:
     name: "cstar-d-idpay-kv"
