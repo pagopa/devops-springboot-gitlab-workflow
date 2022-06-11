@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   devops-java-springboot-color:
-    image: "ghcr.io/pagopa/devops-java-springboot-color:latest"
+    image: "ghcr.io/pagopa/devops-java-springboot-color:0.6.0"
     # build:
     #   dockerfile: ./Dockerfile
     #   context: .
