@@ -1,4 +1,4 @@
-# devops-springboot-gitlab-workflow
+# devops-java-springboot-color
 
 Application written in Spring boot to test pipelines using the gitlab workflow
 
@@ -6,8 +6,11 @@ Application written in Spring boot to test pipelines using the gitlab workflow
 
 <https://github.com/mmumshad/simple-webapp-color> for the idea about colors
 
-## Releases
+## How to release
 
-0.0.1
-0.0.2
-14
+```sh
+helm dep update &&  sleep 1 &&  helm template -f values-dev.yaml .
+
+
+ helm upgrade -i -n idpay -f values-dev.yaml devops-java-springboot-color . 
+```
