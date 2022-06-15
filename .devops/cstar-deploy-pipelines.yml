@@ -176,27 +176,17 @@ stages:
                     valueFile: "$(Pipeline.Workspace)/helm/values-${{ lower(variables.environment) }}.yaml"
                     install: true
                     waitForExecution: true
-                    arguments: "--timeout 3m0s --debug"
-                # - task: DownloadPipelineArtifact@2
-                #   inputs:
-                #     buildType: 'current'
-                #     artifactName: 'manifests'
-                #     targetPath: '$(Pipeline.Workspace)/manifests'
-
-  #               - task: Bash@3
-  #                 displayName: Generate Kustomization
-  #                 name: generateKustomization
-  #                 inputs:
-  #                   targetType: 'inline'
-  #                   script: |
-  #                     cd $(Pipeline.Workspace)/manifests
-  #                     rm -rf kustomization.*
-  #                     curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-  #                     ./kustomize create --autodetect
-  #                     ./kustomize edit set image rtdmsdecrypter=$(containerRegistry)/$(imageRepository):latest
-  #                     rm -rf kustomize
-  #                     cd $(Pipeline.Workspace)
-  #                   failOnStderr: true
+                    arguments: "--timeout 0m10s --debug"
+                - task: Bash@3
+                  displayName: Show resources
+                  name: show_all_resources
+                  inputs:
+                    targetType: 'inline'
+                    script: >
+                      kubectl api-resources --verbs=list --namespaced -o name   | 
+                      xargs -n 1 kubectl get --show-kind --ignore-not-found -n idpay 
+                      -l app.kubernetes.io/instance=${{ variables.helmReleaseName }}
+                    failOnStderr: true
   #               - task: KubernetesManifest@0
   #                 displayName: Customize Manifest
   #                 name: customizeManifest
