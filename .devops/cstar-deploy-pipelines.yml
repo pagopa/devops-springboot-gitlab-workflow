@@ -185,7 +185,7 @@ stages:
     variables:
       helm_release_name: $[replace(variables['helmReleaseName'], '-', '')]
     jobs:
-      - deployment: 'Show_to_${{ variables.helm_release_name}}'
+      - deployment: 'Show_to_'
         displayName: 'Show resource for ${{ variables.helmReleaseName }} K8S'
         pool:
           name: $(selfHostedAgentPool)
