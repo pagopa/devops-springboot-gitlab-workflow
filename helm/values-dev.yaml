@@ -4,8 +4,8 @@ microservice-chart:
   fullnameOverride: ""
 
   image:
-    repository: ghcr.io/pagopa/devops-java-springboot-color
-    tag: 0.6.0
+    repository: cstardcommonacr.azurecr.io/devopsjavaspringbootcolor
+    tag: latest
     pullPolicy: Always
 
   livenessProbe:
@@ -84,7 +84,7 @@ microservice-chart:
 
   envSecret:
     aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
-    wrong-secret: wrong-secret
+    # wrong-secret: wrong-secret
 
   keyvault:
     name: "cstar-d-idpay-kv"
