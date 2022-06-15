@@ -192,6 +192,13 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: Kubernetes@1
+                  displayName: 'Kubernetes Login'
+                  # This is needed to run kubectl command from bash.
+                  inputs:
+                    connectionType: 'Kubernetes Service Connection'
+                    kubernetesServiceEndpoint: ${{ variables.kubernetesServiceConnection }}
+                    command: 'login'
                 - task: Bash@3
                   displayName: Show resources
                   name: show_all_resources
