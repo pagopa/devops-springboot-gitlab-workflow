@@ -177,29 +177,28 @@ stages:
                     install: true
                     waitForExecution: true
                     arguments: "--timeout 0m10s --debug"
+
+  - stage: 'show_resume'
+    displayName: 'Show a resume for resource into ${{ variables.helmReleaseName }} helm release'
+    dependsOn: ['deploy']
+    condition: eq(variables.canDeploy, true)
+    jobs:
+      - deployment: 'show_resource_for_${{ variables.helmReleaseName }}'
+        displayName: 'Show resource for ${{ variables.helmReleaseName }} K8S'
+        pool:
+          name: $(selfHostedAgentPool)
+        environment: '$(environment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
                 - task: Bash@3
                   displayName: Show resources
                   name: show_all_resources
                   inputs:
                     targetType: 'inline'
                     script: >
-                      kubectl api-resources --verbs=list --namespaced -o name   | 
-                      xargs -n 1 kubectl get --show-kind --ignore-not-found -n idpay 
+                      kubectl api-resources --verbs=list --namespaced -o name 
+                      | xargs -n 1 kubectl get --show-kind --ignore-not-found -n $(deployNamespace) 
                       -l app.kubernetes.io/instance=${{ variables.helmReleaseName }}
                     failOnStderr: true
-  #               - task: KubernetesManifest@0
-  #                 displayName: Customize Manifest
-  #                 name: customizeManifest
-  #                 inputs:
-  #                   action: bake
-  #                   renderType: kustomize
-  #                   kustomizationPath: $(Pipeline.Workspace)/manifests
-  #               - task: KubernetesManifest@0
-  #                 displayName: Deploy to Kubernetes Cluster
-  #                 inputs:
-  #                   action: deploy
-  #                   rolloutStatusTimeout: 180
-  #                   kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
-  #                   namespace: '$(variables.deployNamespace)'
-  #                   manifests:  $(customizeManifest.manifestsBundle)
-  #                   containers: '$(containerRegistry)/$(imageRepository):$(pomversion)'
