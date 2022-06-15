@@ -183,7 +183,7 @@ stages:
     dependsOn: ['deploy']
     condition: eq(variables.canDeploy, true)
     jobs:
-      - deployment: 'show_resource_for_'
+      - deployment: 'show_resource_for_$(helmReleaseName)'
         displayName: 'Show resource for ${{ variables.helmReleaseName }} K8S'
         pool:
           name: $(selfHostedAgentPool)
