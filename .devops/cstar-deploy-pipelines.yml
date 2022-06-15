@@ -182,8 +182,6 @@ stages:
     displayName: 'Show a resume for resource into ${{ variables.helmReleaseName }} helm release'
     dependsOn: ['deploy']
     condition: eq(variables.canDeploy, true)
-    variables:
-      helm_release_name: $[replace(variables['helmReleaseName'], '-', '')]
     jobs:
       - deployment: 'Show_to_'
         displayName: 'Show resource for ${{ variables.helmReleaseName }} K8S'
