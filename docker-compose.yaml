@@ -1,14 +1,14 @@
 version: "3.8"
 services:
   devops-java-springboot-color:
-    image: "ghcr.io/pagopa/devops-java-springboot-color:0.6.0"
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: .
+    # image: "ghcr.io/pagopa/devops-java-springboot-color:0.6.0"
+    build:
+      dockerfile: ./Dockerfile
+      context: .
     container_name: devops-java-springboot-color
     restart: always
     environment:
-      - MY_CONFIGMAP_VALUE=1
+      - MY_APP_COLOR=red
       - MY_SECRET_VALUE=very secret 1
     ports:
       - "8080:8080"
