@@ -2,11 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <title>Hello from PagoPA</title>
 <body th:style="'background:' + ${color} + ';'"></body>
-<div style="color: #e4e4e4;
-    text-align:  center;
-    height: 90px;
-    vertical-align:  middle;">
+  <div style="color: #e4e4e4;
+      text-align:  center;
+      height: 90px;
+      vertical-align:  middle;">
 
-  <h1 style="font-size: 5em;"  th:text="${hostname}"></h1>
+    <div style="font-size: 5em; display: inline-block;">
+      <div>hostname: </div>
+      <div th:text="${hostname}">hostname</div>
+    </div>
+  </div>
+  
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  
+  <div style="
+  text-align:  center;
+  height: 90px;
+  vertical-align:  middle;">
+
+    <div style="font-size: 5em; display: inline-block;">Env variables</div>
+    <table style="text-align: left; padding: 50px; padding-top: 10px;">
+      <tr th:each="instance : ${envs}">
+        <td style="font-weight: bold;" th:text="${instance.key}">keyvalue</td>
+        <td th:text="${instance.value}">value</td>
+      </tr>
+    </table>
+  </div>
 
 </div>

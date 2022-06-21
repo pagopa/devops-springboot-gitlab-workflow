@@ -176,40 +176,36 @@ stages:
                     valueFile: "$(Pipeline.Workspace)/helm/values-${{ lower(variables.environment) }}.yaml"
                     install: true
                     waitForExecution: true
-                    arguments: "--timeout 2m0s"
-                # - task: DownloadPipelineArtifact@2
-                #   inputs:
-                #     buildType: 'current'
-                #     artifactName: 'manifests'
-                #     targetPath: '$(Pipeline.Workspace)/manifests'
+                    arguments: "--timeout 0m10s --debug"
 
-  #               - task: Bash@3
-  #                 displayName: Generate Kustomization
-  #                 name: generateKustomization
-  #                 inputs:
-  #                   targetType: 'inline'
-  #                   script: |
-  #                     cd $(Pipeline.Workspace)/manifests
-  #                     rm -rf kustomization.*
-  #                     curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-  #                     ./kustomize create --autodetect
-  #                     ./kustomize edit set image rtdmsdecrypter=$(containerRegistry)/$(imageRepository):latest
-  #                     rm -rf kustomize
-  #                     cd $(Pipeline.Workspace)
-  #                   failOnStderr: true
-  #               - task: KubernetesManifest@0
-  #                 displayName: Customize Manifest
-  #                 name: customizeManifest
-  #                 inputs:
-  #                   action: bake
-  #                   renderType: kustomize
-  #                   kustomizationPath: $(Pipeline.Workspace)/manifests
-  #               - task: KubernetesManifest@0
-  #                 displayName: Deploy to Kubernetes Cluster
-  #                 inputs:
-  #                   action: deploy
-  #                   rolloutStatusTimeout: 180
-  #                   kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
-  #                   namespace: '$(variables.deployNamespace)'
-  #                   manifests:  $(customizeManifest.manifestsBundle)
-  #                   containers: '$(containerRegistry)/$(imageRepository):$(pomversion)'
+  - stage: 'show_resume'
+    displayName: 'Show a resume for resource into ${{ variables.helmReleaseName }} helm release'
+    dependsOn: ['deploy']
+    condition: eq(variables.canDeploy, true)
+    jobs:
+      - deployment: 'Show_to_'
+        displayName: 'Show resource for ${{ variables.helmReleaseName }} K8S'
+        pool:
+          name: $(selfHostedAgentPool)
+        environment: '$(environment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: Kubernetes@1
+                  displayName: 'Kubernetes Login'
+                  # This is needed to run kubectl command from bash.
+                  inputs:
+                    connectionType: 'Kubernetes Service Connection'
+                    kubernetesServiceEndpoint: ${{ variables.kubernetesServiceConnection }}
+                    command: 'login'
+                - task: Bash@3
+                  displayName: Show resources
+                  name: show_all_resources
+                  inputs:
+                    targetType: 'inline'
+                    script: >
+                      kubectl api-resources --verbs=list --namespaced -o name 
+                      | xargs -n 1 kubectl get --show-kind --ignore-not-found -n $(deployNamespace) 
+                      -l app.kubernetes.io/instance=${{ variables.helmReleaseName }}
+                    failOnStderr: true

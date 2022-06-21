@@ -6,6 +6,41 @@ Application written in Spring boot to test pipelines using the gitlab workflow
 
 <https://github.com/mmumshad/simple-webapp-color> for the idea about colors
 
+## Structure
+
+### Endpoints
+
+#### Root Page / (RootController)
+
+Show a simple page with a color, the color is getted by an env var called `MY_APP_COLOR`.
+If this var is null or empty a random color is choosed from a list.
+
+#### App /app (AppController)
+
+This endpoint contains a subendpoint called `/app/envs` that show all the env variables
+
+#### Status /status (StatusController)
+
+Has liveness and readiness endpoints for k8s
+
+## How to use
+
+You can use this simple application or locally or with docker compose, or with k8s usign the helm chart
+
+### Locally
+
+Run the application usign this command
+
+```sh
+export MY_APP_COLOR=green && mvn spring-boot:run
+```
+
+In this way you are able to set a color as env variable and run a spring boot server (with tomcat)
+
+### Docker compose
+
+Use the docker compose to run the application, be ware to set the env variables used by the application
+
 ## How to release
 
 ```sh
