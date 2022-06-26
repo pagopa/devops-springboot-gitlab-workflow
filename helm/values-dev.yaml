@@ -3,9 +3,44 @@ microservice-chart:
   nameOverride: ""
   fullnameOverride: ""
 
+  canaryDelivery:
+    create: false
+    ingress:
+      create: true
+      canary:
+        type: bluegreen
+      # canary:
+      #   type: header
+      #   headerName: canary
+      #   headerValue: pagopa
+      #   weightPercent: 10
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: ghcr.io/pagopa/devops-java-springboot-color
+        tag: 0.7.1
+        pullPolicy: Always
+      envConfig:
+        MY_APP_COLOR: "blue"
+        progressive-delivery: "ok"
+      envSecret:
+        aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
+
+  deployment:
+    create: true
+
+  envConfig:
+    APP: foo
+    MY_APP_COLOR: "green"
+
+  envSecret:
+    aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
+
   image:
-    repository: cstardcommonacr.azurecr.io/devopsjavaspringbootcolor
-    tag: latest
+    repository: ghcr.io/pagopa/devops-java-springboot-color
+    tag: 0.7.1
     pullPolicy: Always
 
   livenessProbe:
@@ -23,9 +58,6 @@ microservice-chart:
     initialDelaySeconds: 60
     failureThreshold: 6
     periodSeconds: 10
-
-  deployment:
-    create: true
 
   service:
     create: true
@@ -60,7 +92,7 @@ microservice-chart:
       cpu: "150m"
 
   autoscaling:
-    enable: true
+    enable: false
     minReplica: 1
     maxReplica: 2
     pollingInterval: 30 # seconds
@@ -78,12 +110,6 @@ microservice-chart:
           # metricAggregationInterval: "-1:1:0"
           metricAggregationType: Count
           targetValue: "30"
-
-  envConfig:
-    APP: foo
-
-  envSecret:
-    aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
 
   keyvault:
     name: "cstar-d-idpay-kv"
