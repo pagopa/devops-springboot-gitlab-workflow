@@ -1,5 +1,5 @@
 microservice-chart:
-  namespace: "idpay"
+  namespace: "rtd"
   nameOverride: ""
   fullnameOverride: ""
 
@@ -66,8 +66,8 @@ microservice-chart:
 
   ingress:
     create: true
-    host: "dev01.idpay.internal.dev.cstar.pagopa.it"
-    path: /idpay/color/(.*)
+    host: "dev01.rtd.internal.dev.cstar.pagopa.it"
+    path: /rtd/color/(.*)
 
   serviceAccount:
     create: false
@@ -112,7 +112,7 @@ microservice-chart:
           targetValue: "30"
 
   keyvault:
-    name: "cstar-d-idpay-kv"
+    name: "cstar-d-rtd-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
 
   # nodeSelector: {}
