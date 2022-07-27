@@ -176,4 +176,4 @@ stages:
                     valueFile: "$(Pipeline.Workspace)/helm/rtd/values-${{ lower(variables.environment) }}.yaml"
                     install: true
                     waitForExecution: true
-                    arguments: "--timeout 0m10s --debug"
+                    arguments: "--timeout 2m00s --debug"
