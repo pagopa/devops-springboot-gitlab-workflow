@@ -67,7 +67,8 @@ microservice-chart:
   ingress:
     create: true
     host: "prod01.rtd.internal.prod.cstar.pagopa.it"
-    path: /rtd/color/(.*)
+    path: /rtd/color(/|$)(.*)
+    rewriteTarget: /$2
 
   serviceAccount:
     create: false

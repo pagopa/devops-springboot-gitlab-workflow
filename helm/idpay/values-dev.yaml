@@ -67,7 +67,8 @@ microservice-chart:
   ingress:
     create: true
     host: "dev01.idpay.internal.dev.cstar.pagopa.it"
-    path: /idpay/color/(.*)
+    path: /idpay/color(/|$)(.*)
+    rewriteTarget: /$2
 
   serviceAccount:
     create: false
