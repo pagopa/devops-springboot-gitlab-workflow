@@ -6,7 +6,6 @@
 #   push:
 #     branches:
 #       - main
-#       - master
 
 # jobs:
 #   release:
