@@ -8,7 +8,7 @@
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
   <groupId>it.pagopa.devops</groupId>
-  <artifactId>javaspringbootcolor</artifactId>
+  <artifactId>devops-java-springboot-color</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>java-springboot-color</name>
   <description>Showcase project for Spring Boot (Devops)</description>
