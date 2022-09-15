@@ -7,6 +7,15 @@ parameters:
     type: boolean
     default: true
 
+  - name: ENV
+    displayName: K8S cluster ENV
+    type: string
+    default: DEV
+    values:
+      - DEV
+      - UAT
+      - PROD
+
 trigger:
   branches:
     include:
@@ -35,21 +44,21 @@ variables:
   canDeploy: true
 
   # If the branch is develop or a feature branch starting with CEN, deploy in DEV environment
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release-dev') }}:
+  ${{ if or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-dev'), eq(parameters.ENV, 'DEV')) }}:
     environment: 'DEV'
     dockerRegistryServiceConnection: '$(DEV_CONTAINER_REGISTRY_SERVICE_CONN)'
     kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
     containerRegistry: '$(DEV_CONTAINER_REGISTRY_NAME)'
     selfHostedAgentPool: $(DEV_AGENT_POOL)
 
-  ${{ elseif startsWith(variables['Build.SourceBranch'], 'refs/heads/release-uat') }}:
+  ${{ elseif or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-uat'), eq(parameters.ENV, 'UAT')) }}:
     environment: 'UAT'
     dockerRegistryServiceConnection: '$(UAT_CONTAINER_REGISTRY_SERVICE_CONN)'
     kubernetesServiceConnection: '$(UAT_KUBERNETES_SERVICE_CONN)'
     containerRegistry: '$(UAT_CONTAINER_REGISTRY_NAME)'
     selfHostedAgentPool: $(UAT_AGENT_POOL)
 
-  ${{ elseif startsWith(variables['Build.SourceBranch'], 'refs/heads/release-prod') }}:
+  ${{ elseif or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release-prod'), eq(parameters.ENV, 'PROD')) }}:
     environment: 'PROD'
     dockerRegistryServiceConnection: '$(PROD_CONTAINER_REGISTRY_SERVICE_CONN)'
     kubernetesServiceConnection: '$(PROD_KUBERNETES_SERVICE_CONN)'
@@ -106,13 +115,6 @@ stages:
                 $(Build.BuildId)
                 latest
                 $(pomversion)
-          # - task: PublishPipelineArtifact@1
-          #   displayName: 'Publish Artifact manifests'
-          #   condition: and(succeeded(), eq(variables.canDeploy, true))
-          #   inputs:
-          #     targetPath: '$(Build.Repository.LocalPath)/manifests'
-          #     artifact: 'manifests'
-          #     publishLocation: 'pipeline'
 
   - stage: 'publish_artifact_helm'
     displayName: 'Publish_artifact_Helm'
@@ -127,7 +129,7 @@ stages:
             displayName: 'Publish Artifact manifests'
             condition: succeeded()
             inputs:
-              targetPath: '$(Build.Repository.LocalPath)/helm/rtd'
+              targetPath: '$(Build.Repository.LocalPath)/helm/idpay'
               artifact: 'helm'
               publishLocation: 'pipeline'
 
@@ -152,12 +154,12 @@ stages:
                   inputs:
                     buildType: 'current'
                     artifactName: 'helm'
-                    targetPath: '$(Pipeline.Workspace)/helm/rtd'
+                    targetPath: '$(Pipeline.Workspace)/helm/idpay'
                 - task: Bash@3
                   name: helm_dependency_build
                   displayName: Helm dependency build
                   inputs:
-                    workingDirectory: '$(Pipeline.Workspace)/helm/rtd'
+                    workingDirectory: '$(Pipeline.Workspace)/helm/idpay'
                     targetType: 'inline'
                     script: |
                       helm repo add pagopa-microservice https://pagopa.github.io/aks-microservice-chart-blueprint
@@ -170,10 +172,10 @@ stages:
                     namespace: '$(deployNamespace)'
                     command: upgrade
                     chartType: filepath
-                    chartPath: $(Pipeline.Workspace)/helm/rtd
+                    chartPath: $(Pipeline.Workspace)/helm/idpay
                     chartName: ${{ variables.helmReleaseName }}
                     releaseName: ${{ variables.helmReleaseName }}
-                    valueFile: "$(Pipeline.Workspace)/helm/rtd/values-${{ lower(variables.environment) }}.yaml"
+                    valueFile: "$(Pipeline.Workspace)/helm/idpay/values-${{ lower(variables.environment) }}.yaml"
                     install: true
                     waitForExecution: true
                     arguments: "--timeout 2m00s --debug"
