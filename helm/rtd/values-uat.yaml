@@ -26,7 +26,7 @@ microservice-chart:
         MY_APP_COLOR: "blue"
         progressive-delivery: "ok"
       envSecret:
-        aks-api-url: cstar-p-weu-prod01-aks-apiserver-url
+        aks-api-url: cstar-u-weu-prod01-aks-apiserver-url
 
   deployment:
     create: true
@@ -36,7 +36,7 @@ microservice-chart:
     MY_APP_COLOR: "green"
 
   envSecret:
-    aks-api-url: cstar-p-weu-prod01-aks-apiserver-url
+    aks-api-url: cstar-u-weu-prod01-aks-apiserver-url
 
   image:
     repository: ghcr.io/pagopa/devops-java-springboot-color
@@ -103,8 +103,8 @@ microservice-chart:
         metadata:
           tenantId: 7788edaf-0346-4068-9d79-c868aed15b3d
           subscriptionId: ac17914c-79bf-48fa-831e-1359ef74c1d5
-          resourceGroupName: dvopla-p-sec-rg
-          resourceURI: Microsoft.KeyVault/vaults/dvopla-p-neu-kv
+          resourceGroupName: dvopla-u-sec-rg
+          resourceURI: Microsoft.KeyVault/vaults/dvopla-u-neu-kv
           metricName: ServiceApiHit
           # metricNamespace: Microsoft.KeyVault/vaults
           # metricFilter: namespace eq 'default'
@@ -113,7 +113,7 @@ microservice-chart:
           targetValue: "30"
 
   keyvault:
-    name: "cstar-p-rtd-kv"
+    name: "cstar-u-rtd-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
 
   # nodeSelector: {}
