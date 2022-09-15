@@ -10,16 +10,18 @@ Application written in Spring boot to test pipelines using the gitlab workflow
 
 ### Endpoints
 
-#### Root Page / (RootController)
+#### Root Page `/` (RootController)
 
 Show a simple page with a color, the color is getted by an env var called `MY_APP_COLOR`.
 If this var is null or empty a random color is choosed from a list.
 
-#### App /app (AppController)
+#### App `/app` (AppController)
 
-This endpoint contains a subendpoint called `/app/envs` that show all the env variables
+##### `/app/envs`
 
-#### Status /status (StatusController)
+This endpoint contains a subendpoint called  that show all the env variables
+
+#### Status `/status` (StatusController)
 
 Has liveness and readiness endpoints for k8s
 
