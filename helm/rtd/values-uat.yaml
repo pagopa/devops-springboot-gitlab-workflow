@@ -26,7 +26,7 @@ microservice-chart:
         MY_APP_COLOR: "blue"
         progressive-delivery: "ok"
       envSecret:
-        aks-api-url: cstar-u-weu-prod01-aks-apiserver-url
+        aks-api-url: cstar-u-weu-uat01-aks-apiserver-url
 
   deployment:
     create: true
@@ -36,7 +36,7 @@ microservice-chart:
     MY_APP_COLOR: "green"
 
   envSecret:
-    aks-api-url: cstar-u-weu-prod01-aks-apiserver-url
+    aks-api-url: cstar-u-weu-uat01-aks-apiserver-url
 
   image:
     repository: ghcr.io/pagopa/devops-java-springboot-color
@@ -66,7 +66,7 @@ microservice-chart:
 
   ingress:
     create: true
-    host: "prod01.rtd.internal.prod.cstar.pagopa.it"
+    host: "uat01.rtd.internal.uat.cstar.pagopa.it"
     path: /rtd/color(/|$)(.*)
     rewriteTarget: /$2
 
