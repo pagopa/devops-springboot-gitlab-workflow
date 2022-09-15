@@ -16,17 +16,6 @@ parameters:
       - UAT
       - PROD
 
-trigger:
-  branches:
-    include:
-      - release-dev
-      - release-uat
-      - release-prod
-  paths:
-    include:
-      - src/*
-      - pom.xml
-
 pr: none
 
 resources:
