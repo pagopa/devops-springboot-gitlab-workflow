@@ -9,10 +9,9 @@ pr:
       - main
   paths:
     include:
-      - '.devops/cstar-rtd-code-review-pipelines.yml'
+      - '.devops/cstar-idpay-code-review-pipelines.yml'
 
 pool:
-  #vmImage: 'ubuntu-latest'
   vmImage: ubuntu-22.04
 
 #variables:
@@ -20,14 +19,6 @@ pool:
 #  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
 
 steps:
-  #  - task: Cache@2
-  #    inputs:
-  #      key: 'maven | "$(Agent.OS)" | pom.xml'
-  #      restoreKeys: |
-  #        maven | "$(Agent.OS)"
-  #        maven
-  #      path: $(MAVEN_CACHE_FOLDER)
-  #    displayName: Cache Maven local repo
 
   - task: SonarCloudPrepare@1
     displayName: 'Prepare SonarCloud analysis configuration'
@@ -39,13 +30,6 @@ steps:
         sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
         sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
         sonar.exclusions='**/enums/**, **/model/**, **/dto/**, **/*Constant*, **/*Config.java, **/*Scheduler.java, **/*Application.java, **/src/test/**, **/Dummy*.java'
-
-#  - task: DownloadSecureFile@1
-#    displayName: 'download settings.xml for Maven'
-#    name: settingsxml
-#    inputs:
-#      secureFile: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
-#      retryCount: '2'
 
 # options: '-B -s $(settingsxml.secureFilePath) -Dmaven.test.failure.ignore=true'
   - task: Maven@3
