@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
 
   canaryDelivery:
-    create: false
+    create: true
     ingress:
       create: true
       canary:
@@ -13,14 +13,15 @@ microservice-chart:
       #   type: header
       #   headerName: canary
       #   headerValue: pagopa
-      #   weightPercent: 10
+      #   weightPercent: 50
     service:
       create: true
     deployment:
       create: true
+      # forceRedeploy: true
       image:
         repository: ghcr.io/pagopa/devops-java-springboot-color
-        tag: 0.8.1
+        tag: 0.7.1
         pullPolicy: Always
       envConfig:
         MY_APP_COLOR: "blue"
@@ -28,8 +29,12 @@ microservice-chart:
       envSecret:
         aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
 
+#
+# Deploy
+#
   deployment:
     create: true
+    # forceRedeploy: true
 
   envConfig:
     APP: foo
@@ -38,9 +43,14 @@ microservice-chart:
   envSecret:
     aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
 
+  # envConfigMapExternals:
+  #   progressive-delivery-mock-one:
+  #     PLAYER_INITIAL_LIVES_ENV: player_initial_lives
+  #     UI_PROPERTIES_FILE_NAME_ENV: ui_properties_file_name
+
   image:
     repository: ghcr.io/pagopa/devops-java-springboot-color
-    tag: 0.8.1
+    tag: 0.7.1
     pullPolicy: Always
 
   livenessProbe:
@@ -59,16 +69,26 @@ microservice-chart:
     failureThreshold: 6
     periodSeconds: 10
 
+
+#
+# Network
+#
   service:
     create: true
     type: ClusterIP
-    port: 8080
+    ports:
+    - 8080
+    - 4000
 
   ingress:
     create: true
     host: "dev01.rtd.internal.dev.cstar.pagopa.it"
-    path: /rtd/color(/|$)(.*)
-    rewriteTarget: /$2
+    path: /rtd/progressive-delivery/(.*)
+    servicePort: 8080
+    # proxyBodySize: 2m
+    annotations: {
+      nginx.ingress.kubernetes.io/satisfy: "any"
+    }
 
   serviceAccount:
     create: false

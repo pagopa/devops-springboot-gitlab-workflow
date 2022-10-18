@@ -18,6 +18,7 @@ microservice-chart:
       create: true
     deployment:
       create: true
+      # forceRedeploy: true
       image:
         repository: ghcr.io/pagopa/devops-java-springboot-color
         tag: 0.8.1
@@ -28,15 +29,6 @@ microservice-chart:
       envSecret:
         aks-api-url: cstar-u-weu-uat01-aks-apiserver-url
 
-  deployment:
-    create: true
-
-  envConfig:
-    APP: foo
-    MY_APP_COLOR: "green"
-
-  envSecret:
-    aks-api-url: cstar-u-weu-uat01-aks-apiserver-url
 
   image:
     repository: ghcr.io/pagopa/devops-java-springboot-color
@@ -59,16 +51,38 @@ microservice-chart:
     failureThreshold: 6
     periodSeconds: 10
 
+  deployment:
+    create: true
+    # forceRedeploy: true
+
+  envConfig:
+    APP: foo
+    MY_APP_COLOR: "green"
+
+  envSecret:
+    aks-api-url: cstar-d-weu-dev01-aks-apiserver-url
+
   service:
     create: true
     type: ClusterIP
-    port: 8080
+    ports:
+    - 8080
+    - 4000
 
   ingress:
     create: true
     host: "uat01.rtd.internal.uat.cstar.pagopa.it"
     path: /rtd/color(/|$)(.*)
     rewriteTarget: /$2
+    servicePort: 8080
+    # proxyBodySize: 2m
+    annotations: {
+      nginx.ingress.kubernetes.io/satisfy: "any"
+    }
+
+  keyvault:
+    name: "cstar-u-rtd-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
 
   serviceAccount:
     create: false
@@ -112,9 +126,6 @@ microservice-chart:
           metricAggregationType: Count
           targetValue: "30"
 
-  keyvault:
-    name: "cstar-u-rtd-kv"
-    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
 
   # nodeSelector: {}
 
