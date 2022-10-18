@@ -83,7 +83,7 @@ microservice-chart:
   ingress:
     create: true
     host: "dev01.rtd.internal.dev.cstar.pagopa.it"
-    path: /rtd/progressive-delivery/(.*)
+    path: /rtd/color/(.*)
     servicePort: 8080
     # proxyBodySize: 2m
     annotations: {
