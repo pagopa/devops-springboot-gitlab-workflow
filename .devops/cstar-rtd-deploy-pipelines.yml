@@ -16,6 +16,17 @@ parameters:
       - UAT
       - PROD
 
+trigger:
+  branches:
+    include:
+      - release-dev
+      - release-uat
+      - release-prod
+  paths:
+    include:
+      - src/*
+      - pom.xml
+
 pr: none
 
 resources:
@@ -154,6 +165,15 @@ stages:
                       helm repo add pagopa-microservice https://pagopa.github.io/aks-microservice-chart-blueprint
                       helm dep build
                     failOnStderr: true
+                - task: Bash@3
+                  name: helm_template
+                  displayName: Helm template
+                  inputs:
+                    workingDirectory: '$(Pipeline.Workspace)/helm/rtd'
+                    targetType: 'inline'
+                    script: |
+                       helm template . -f values-${{ lower(variables.environment) }}.yaml
+                    failOnStderr: true
                 - task: HelmDeploy@0
                   displayName: Helm upgrade
                   inputs:
@@ -167,4 +187,4 @@ stages:
                     valueFile: "$(Pipeline.Workspace)/helm/rtd/values-${{ lower(variables.environment) }}.yaml"
                     install: true
                     waitForExecution: true
-                    arguments: "--timeout 2m00s --debug"
+                    arguments: "--timeout 5m00s --debug"

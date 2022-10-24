@@ -71,7 +71,7 @@ microservice-chart:
 
   ingress:
     create: true
-    host: "prod01.rtd.internal.prod.cstar.pagopa.it"
+    host: "prod01.rtd.internal.cstar.pagopa.it"
     path: /rtd/color(/|$)(.*)
     rewriteTarget: /$2
     servicePort: 8080
