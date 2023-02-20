@@ -43,11 +43,11 @@ In this way you are able to set a color as env variable and run a spring boot se
 
 Use the docker compose to run the application, be ware to set the env variables used by the application
 
-## How to release
+## How to release (into domain folder)
 
 ```sh
-helm dep update &&  sleep 1 &&  helm template -f values-dev.yaml .
+helm dep update &&  sleep 1 &&  helm template -f values-dev.yaml \.
 
 
- helm upgrade -i -n idpay -f values-dev.yaml devops-java-springboot-color . 
+helm upgrade -i -n idpay -f values-dev.yaml devops-java-springboot-color \.
 ```
