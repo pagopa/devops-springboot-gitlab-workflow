@@ -198,7 +198,7 @@ stages:
                     namespace: '$(deployNamespace)'
                     command: upgrade
                     chartType: filepath
-                    chartPath: $(Pipeline.Workspace)/helm
+                    chartPath: $(Pipeline.Workspace)/helm/$(product)/$(deployNamespace)
                     chartName: $(K8S_IMAGE_REPOSITORY_NAME)
                     releaseName: $(K8S_IMAGE_REPOSITORY_NAME)
                     valueFile: "$(Pipeline.Workspace)/helm/$(product)/$(deployNamespace)/values-${{ lower(variables.environment) }}.yaml"
