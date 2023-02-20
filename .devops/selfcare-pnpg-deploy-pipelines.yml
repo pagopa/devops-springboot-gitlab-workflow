@@ -172,6 +172,15 @@ stages:
                     buildType: 'current'
                     artifactName: 'helm'
                     targetPath: '$(Pipeline.Workspace)/helm'
+                - task: Bash@3
+                  displayName: ls
+                  name: ls
+                  condition: succeeded()
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      ls -la $(Pipeline.Workspace)/helm/$(product)/$(deployNamespace)
+                  failOnStderr: true
                 - task: HelmDeploy@0
                   displayName: Helm upgrade
                   inputs:
