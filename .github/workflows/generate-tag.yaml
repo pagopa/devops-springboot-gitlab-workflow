@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.AZURE_DEVOPS_GITHUB_RW }}
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Conventional Changelog Action
         id: changelog
@@ -22,14 +22,14 @@ jobs:
         with:
           skip-on-empty: "false"
           skip-commit: "true"
-          github-token: ${{ secrets.AZURE_DEVOPS_GITHUB_RW }}
+          github-token: ${{ secrets.PAT_TOKEN }}
           output-file: "false"  
 
       - name: Create Release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.AZURE_DEVOPS_GITHUB_RW }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           tag_name: ${{ steps.changelog.outputs.tag }}
           release_name: ${{ steps.changelog.outputs.tag }}
