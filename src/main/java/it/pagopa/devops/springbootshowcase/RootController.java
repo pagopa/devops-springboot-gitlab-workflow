@@ -22,17 +22,25 @@ public class RootController {
     @Value("${MY_APP_COLOR:}")
     private String myAppColor;
 
+    @Value("${MY_MANDATORY_SECRET}")
+    private String myMandatorySecret;
+
+    @Value("${MY_MANDATORY_VALUE}")
+    private String myMandatoryValue;
+
     @GetMapping("/")
     public ModelAndView passParametersWithModelAndView() throws UnknownHostException {
+
         ModelAndView modelAndView = new ModelAndView("indexTemplate");
-        modelAndView.addObject("color", getOneColor(myAppColor));
+        modelAndView.addObject("color", getOneColor(myAppColor, colors));
         modelAndView.addObject("hostname", InetAddress.getLocalHost().getHostName());
         modelAndView.addObject("envs", envs());
+        modelAndView.addObject("myMandatorySecret", myMandatorySecret);
+        modelAndView.addObject("myMandatoryValue", myMandatoryValue);
         return modelAndView;
     }
 
-
-    private String getOneColor(String choiseColor){
+    private String getOneColor(String choiseColor, List<String> colors){
         Random r = new Random();
 
         if (choiseColor != null && choiseColor != ""){
@@ -55,5 +63,5 @@ public class RootController {
 
         return treeMap;
     }
-    
+
 }
