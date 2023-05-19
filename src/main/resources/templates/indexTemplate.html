@@ -7,9 +7,19 @@
       height: 90px;
       vertical-align:  middle;">
 
-    <div style="font-size: 5em; display: inline-block;">
+    <div style="font-size: 3em; display: inline-flex;">
       <div>hostname: </div>
       <div th:text="${hostname}">hostname</div>
+    </div>
+    <br/>
+    <div style="font-size: 1em; display: inline-flex;">
+      <div>myMandatorySecret: </div>
+      <div th:text="${myMandatorySecret}">myMandatorySecret</div>
+    </div>
+    <br/>
+    <div style="font-size: 1em; display: inline-flex;">
+      <div>myMandatoryValue: </div>
+      <div th:text="${myMandatoryValue}">myMandatoryValue</div>
     </div>
   </div>
   
@@ -25,7 +35,7 @@
   height: 90px;
   vertical-align:  middle;">
 
-    <div style="font-size: 5em; display: inline-block;">Env variables</div>
+    <div style="font-size: 3em; display: inline-flex;">Env variables</div>
     <table style="text-align: left; padding: 50px; padding-top: 10px;">
       <tr th:each="instance : ${envs}">
         <td style="font-weight: bold;" th:text="${instance.key}">keyvalue</td>

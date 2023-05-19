@@ -9,6 +9,7 @@ services:
     restart: always
     environment:
       - MY_APP_COLOR=red
-      - MY_SECRET_VALUE=very secret 1
+      - MY_MANDATORY_SECRET="very secret"
+      - MY_MANDATORY_VALUE="very value"
     ports:
       - "8080:8080"
