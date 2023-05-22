@@ -29,18 +29,12 @@ Has liveness and readiness endpoints for k8s
 
 You can use this simple application or locally or with docker compose, or with k8s usign the helm chart.
 
-> Is mandatory to setup this two env variables:
-> * MY_MANDATORY_VALUE
-> * MY_MANDATORY_SECRET
-
-This variables are for asserts of helm template
-
 ### Locally
 
 Run the application usign this command
 
 ```sh
-export MY_APP_COLOR=green MY_MANDATORY_VALUE=dummy MY_MANDATORY_SECRET=dummy && mvn spring-boot:run
+export MY_APP_COLOR=green && mvn spring-boot:run
 ```
 
 In this way you are able to set a color as env variable and run a spring boot server (with tomcat)

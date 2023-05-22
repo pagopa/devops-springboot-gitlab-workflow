@@ -22,12 +22,6 @@ public class RootController {
     @Value("${MY_APP_COLOR:}")
     private String myAppColor;
 
-    @Value("${MY_MANDATORY_SECRET}")
-    private String myMandatorySecret;
-
-    @Value("${MY_MANDATORY_VALUE}")
-    private String myMandatoryValue;
-
     @GetMapping("/")
     public ModelAndView passParametersWithModelAndView() throws UnknownHostException {
 
@@ -35,8 +29,6 @@ public class RootController {
         modelAndView.addObject("color", getOneColor(myAppColor, colors));
         modelAndView.addObject("hostname", InetAddress.getLocalHost().getHostName());
         modelAndView.addObject("envs", envs());
-        modelAndView.addObject("myMandatorySecret", myMandatorySecret);
-        modelAndView.addObject("myMandatoryValue", myMandatoryValue);
         return modelAndView;
     }
 
