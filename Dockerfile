@@ -3,9 +3,6 @@
 #
 FROM maven:3.8.4-jdk-11-slim as buildtime
 
-ENV MY_MANDATORY_SECRET=dummy \
-    MY_MANDATORY_VALUE=dummy
-
 WORKDIR /build
 COPY . .
 
