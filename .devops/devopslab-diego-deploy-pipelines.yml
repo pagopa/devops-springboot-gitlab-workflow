@@ -17,7 +17,7 @@ variables:
   imageRepository: '$(K8S_IMAGE_REPOSITORY_NAME)'
   deployNamespace: '$(DEPLOY_NAMESPACE)'
   helmReleaseName : '$(HELM_RELEASE_NAME)'
-  helmChartPath: '$(Pipeline.Workspace)/helm/devopslab/$(DEPLOY_NAMESPACE)'
+  helmChartPath: '$(System.DefaultWorkingDirectory)/helm/devopslab/$(DEPLOY_NAMESPACE)'
   settingsXmlROsecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   settingsXmlSecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   canDeploy: true
