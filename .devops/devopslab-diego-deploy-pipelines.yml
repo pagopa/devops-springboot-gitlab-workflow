@@ -49,13 +49,13 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout: self
                 - task: Bash@3
                   inputs:
                     targetType: 'inline'
                     script: |
                       ls -la
                       pwd
-                - download: none
                 - task: Bash@3
                   name: helm_dependency_build
                   displayName: Helm dependency build
