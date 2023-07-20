@@ -17,7 +17,7 @@ variables:
   imageRepository: '$(K8S_IMAGE_REPOSITORY_NAME)'
   deployNamespace: '$(DEPLOY_NAMESPACE)'
   helmReleaseName : '$(HELM_RELEASE_NAME)'
-  helmChartPath: '$(Pipeline.Workspace)/helm/$(DEPLOY_NAMESPACE)'
+  helmChartPath: '$(Pipeline.Workspace)/helm/devopslab/$(DEPLOY_NAMESPACE)'
   settingsXmlROsecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   settingsXmlSecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
   canDeploy: true
@@ -32,55 +32,13 @@ variables:
 
   ${{ else }}:
     environment: 'DEV'
-    # dockerRegistryServiceConnection: '$(DEV_CONTAINER_REGISTRY_SERVICE_CONN)'
-    # containerRegistry: '$(DEV_CONTAINER_REGISTRY_NAME)'
     kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
     selfHostedAgentPool: $(DEV_AGENT_POOL)
 
 stages:
-  - stage: 'pom_version'
-    displayName: Release
-    condition: eq(variables.canDeploy, true)
-    jobs:
-      - job: POM
-        displayName: POM
-        pool:
-          vmImage: $(vmImageNameDefault)
-        steps:
-          - task: Bash@3
-            displayName: Get POM version
-            name: getpomversion
-            condition: and(succeeded(), eq(variables.canDeploy, true))
-            inputs:
-              targetType: 'inline'
-              script: |
-                version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                echo "##vso[task.setvariable variable=outputpomversion;isOutput=true]$version"
-              failOnStderr: true
-
-  - stage: 'publish_artifact_helm'
-    displayName: 'Publish_artifact_Helm'
-    dependsOn: ['build']
-    jobs:
-      - job: Publish_artifact_helm
-        displayName: Publish_artifact_helm
-        pool:
-          vmImage: $(vmImageNameDefault)
-        steps:
-          - task: PublishPipelineArtifact@1
-            displayName: 'Publish Artifact manifests'
-            condition: succeeded()
-            inputs:
-              targetPath: '$(Build.Repository.LocalPath)/helm'
-              artifact: 'helm'
-              publishLocation: 'pipeline'
 
   - stage: 'deploy'
     displayName: 'Deploy to ${{ variables.environment }} K8S'
-    dependsOn: ['publish_artifact_helm']
-    condition: and(succeeded(), eq(variables.canDeploy, true))
-    variables:
-      pomversion: $[ stageDependencies.Release.POM.outputs['getpomversion.outputpomversion'] ]
     jobs:
       - deployment: 'Deploy_to_${{ variables.environment }}'
         displayName: 'Deploy to ${{ variables.environment }} K8S'
@@ -92,12 +50,6 @@ stages:
             deploy:
               steps:
                 - download: none
-                - task: DownloadPipelineArtifact@2
-                  inputs:
-                    buildType: 'current'
-                    artifactName: 'helm'
-                    targetPath: '${{ variables.helmChartPath }}'
-                - task: KubectlInstaller@0
                 - task: Bash@3
                   name: helm_dependency_build
                   displayName: Helm dependency build
