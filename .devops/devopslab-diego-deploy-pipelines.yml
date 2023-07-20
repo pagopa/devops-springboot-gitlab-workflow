@@ -1,23 +1,8 @@
 # Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
-parameters:
-  - name: 'executeBuild'
-    displayName: 'Launch maven and docker build'
-    type: boolean
-    default: true
 
-trigger:
-  branches:
-    include:
-      - release-*
-      - main
-  paths:
-    include:
-      - src/*
-      - helm/*
-      - pom.xml
-      - Dockerfile
+trigger: none
 
 pr: none
 
