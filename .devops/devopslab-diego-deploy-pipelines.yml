@@ -40,13 +40,6 @@ stages:
   - stage: 'deploy'
     displayName: 'Deploy to ${{ variables.environment }} K8S'
     jobs:
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: |
-            ls -la
-            pwd
-
       - deployment: 'Deploy_to_${{ variables.environment }}'
         displayName: 'Deploy to ${{ variables.environment }} K8S'
         pool:
@@ -56,6 +49,12 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: Bash@3
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      ls -la
+                      pwd
                 - download: none
                 - task: Bash@3
                   name: helm_dependency_build
