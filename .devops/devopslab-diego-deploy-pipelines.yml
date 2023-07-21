@@ -54,6 +54,7 @@ stages:
                   inputs:
                     targetType: 'inline'
                     script: |
+                      kubectl version
                       ls -la
                       pwd
                 - task: Bash@3
