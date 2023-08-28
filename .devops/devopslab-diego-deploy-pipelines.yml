@@ -1,0 +1,83 @@
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+
+trigger: none
+
+pr: none
+
+resources:
+  - repo: self
+
+variables:
+
+  #  vmImageNameDefault: 'ubuntu-latest'
+  vmImageNameDefault: ubuntu-22.04
+
+  imageRepository: '$(K8S_IMAGE_REPOSITORY_NAME)'
+  deployNamespace: '$(DEPLOY_NAMESPACE)'
+  helmReleaseName : '$(HELM_RELEASE_NAME)'
+  helmChartPath: '$(System.DefaultWorkingDirectory)/helm/devopslab/$(DEPLOY_NAMESPACE)'
+  settingsXmlROsecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
+  settingsXmlSecureFileName: '$(SETTINGS_XML_RO_SECURE_FILE_NAME)'
+  canDeploy: true
+
+  # If the branch is develop or a feature branch starting with CEN, deploy in DEV environment
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release-dev') }}:
+    environment: 'DEV'
+    # dockerRegistryServiceConnection: '$(DEV_CONTAINER_REGISTRY_SERVICE_CONN)'
+    # containerRegistry: '$(DEV_CONTAINER_REGISTRY_NAME)'
+    kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
+    selfHostedAgentPool: $(DEV_AGENT_POOL)
+
+  ${{ else }}:
+    environment: 'DEV'
+    kubernetesServiceConnection: '$(DEV_KUBERNETES_SERVICE_CONN)'
+    selfHostedAgentPool: $(DEV_AGENT_POOL)
+
+stages:
+
+  - stage: 'deploy'
+    displayName: 'Deploy to ${{ variables.environment }} K8S'
+    jobs:
+      - deployment: 'Deploy_to_${{ variables.environment }}'
+        displayName: 'Deploy to ${{ variables.environment }} K8S'
+        pool:
+          name: $(selfHostedAgentPool)
+        environment: '$(environment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: Bash@3
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      kubectl version
+                      ls -la
+                      pwd
+                - task: Bash@3
+                  name: helm_dependency_build
+                  displayName: Helm dependency build
+                  inputs:
+                    workingDirectory: '${{ variables.helmChartPath }}'
+                    targetType: 'inline'
+                    script: |
+                      helm repo add pagopa-microservice https://pagopa.github.io/aks-microservice-chart-blueprint
+                      helm dep build
+                    failOnStderr: true
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade
+                  inputs:
+                    kubernetesServiceEndpoint: ${{ variables.kubernetesServiceConnection }}
+                    namespace: '$(deployNamespace)'
+                    command: upgrade
+                    chartType: filepath
+                    chartPath: '${{ variables.helmChartPath }}'
+                    chartName: ${{ variables.helmReleaseName }}
+                    releaseName: ${{ variables.helmReleaseName }}
+                    valueFile: "${{ variables.helmChartPath }}/values-${{ lower(variables.environment) }}.yaml"
+                    install: true
+                    waitForExecution: true
+                    arguments: "--timeout 3m0s --debug"
