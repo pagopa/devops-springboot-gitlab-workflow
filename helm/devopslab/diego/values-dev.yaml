@@ -3,6 +3,9 @@ microservice-chart:
   nameOverride: ""
   fullnameOverride: ""
 
+  labels:
+    product: diego
+
   deployment:
     create: true
     replicas: 3
