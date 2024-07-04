@@ -26,7 +26,7 @@ jobs:
       - name: print_ok
         id: print
         if: steps.release.outputs.new_release_published == 'true'
-        run: echo "New Release value ${{steps.release.outputs.new_release_published}}"
+        run: echo "New Release version ${{steps.release.outputs.new_release_version}}"
 
       - name: print_fail
         id: print_fail
