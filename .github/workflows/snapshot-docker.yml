@@ -1,4 +1,4 @@
-name: Snapshot release feature
+name: Snapshot docker build and push
 
 on:
   push:
@@ -12,15 +12,12 @@ on:
 
 jobs:
   release:
-    name: Beta docker on dev branch
+    name: Snapshot Docker
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Release with docker action
+      - name: 📦 Docker build and push
         id: release
-        uses: pagopa/eng-github-actions-iac-template/global/docker-build-push@docker-release-choos-folder #
+        uses: pagopa/eng-github-actions-iac-template/global/docker-build-push@main #
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          docker_context_path: "."
-          docker_tag_prefix: "my"
-
