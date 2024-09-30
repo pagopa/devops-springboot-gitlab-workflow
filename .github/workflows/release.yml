@@ -21,9 +21,6 @@ jobs:
         uses: pagopa/eng-github-actions-iac-template/global/release-action@release-with- #
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_format: develop-v${version}
-          branches: |
-            - 'main'
-            - 'uat'
-            - 'develop'
+          tag_format: 'develop-v${version}'
+          branches: 'develop'
 
