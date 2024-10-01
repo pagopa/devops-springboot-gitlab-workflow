@@ -37,7 +37,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_format: ${{ steps.set-tag-format.outputs.TAG_FORMAT }}
-          branches: 'develop,uat,main'
+          branches: ${{ github.ref_name }}
 
       # - name: Trigger Azure DevOps pipeline
       #   if: github.ref == 'refs/heads/develop'
