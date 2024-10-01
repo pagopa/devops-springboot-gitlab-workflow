@@ -1,10 +1,11 @@
 name: Release
 
 on:
-  # Trigger the workflow on push on the main branch
   push:
     branches:
       - develop
+      - uat
+      - main
     paths-ignore:
       - 'CODEOWNERS'
       - '**.md'
@@ -16,11 +17,32 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set tag format
+        id: set-tag-format
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "TAG_FORMAT=develop-v\${version}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/uat" ]]; then
+            echo "TAG_FORMAT=uat-v\${version}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "TAG_FORMAT=v\${version}" >> $GITHUB_OUTPUT
+          fi
+
       - name: 🚀 Release with docker action
         id: release
-        uses: pagopa/eng-github-actions-iac-template/global/release-action@release-with- #
+        uses: pagopa/eng-github-actions-iac-template/global/release-action@release-with-
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_format: 'develop-v${version}'
-          branches: 'develop'
+          tag_format: ${{ steps.set-tag-format.outputs.TAG_FORMAT }}
+          branches: 'develop,uat,main'
 
+      # - name: Trigger Azure DevOps pipeline
+      #   if: github.ref == 'refs/heads/develop'
+      #   uses: Azure/pipelines@v1
+      #   with:
+      #     azure-devops-project-url: 'https://dev.azure.com/organization/project-name'
+      #     azure-pipeline-name: 'your-pipeline-name'
+      #     azure-devops-token: ${{ secrets.AZURE_DEVOPS_PAT }}
