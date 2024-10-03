@@ -14,10 +14,31 @@ jobs:
   release:
     name: Snapshot Docker
     runs-on: ubuntu-22.04
+    environment: dev
 
     steps:
-      - name: 📦 Docker build and push
-        id: release
-        uses: pagopa/eng-github-actions-iac-template/global/docker-build-push@main #
+      # - name: Log in to the Github Container registry
+      #   id: docker_login
+      #   uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 #v3.2.0
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Build and push Docker image with release version
+      #   id: docker_build_push
+      #   uses: docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c #v6.3.0
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: "ghcr.io/${{ github.repository }}:snapshot,ghcr.io/${{ github.repository }}:snapshot-${{ github.ref_name }}"
+      #     labels: |
+      #       maintainer=https://pagopa.it
+      #       org.opencontainers.image.source=https://github.com/${{ github.repository }}
+
+      - name: Trigger Azure DevOps pipeline
+        uses: Azure/pipelines@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          azure-devops-project-url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
+          azure-pipeline-name: 'devopslab-diego-deploy.deploy'
+          azure-devops-token: ${{ secrets.AZURE_DEVOPS_PAT }}
