@@ -44,6 +44,6 @@ jobs:
           azure-devops-token: ${{ secrets.AZUREDEVOPS_PAT }}
           azure-template-parameters: |
             {
-                "APPS_ARGOCD": ["one-color"]
+                "APPS_ARGOCD": "one-color"
             }
           azure-pipeline-variables: '{"system.debug": "true"}'
