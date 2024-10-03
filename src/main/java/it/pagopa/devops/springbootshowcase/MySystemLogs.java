@@ -14,7 +14,7 @@ public class MySystemLogs {
      }
 
     @EventListener
-    public void onShutdown(ContextStoppedEvent event) { 
+    public void onShutdown(ContextStoppedEvent event) {
         System.out.println("⏾ Goodbye");
      }
 }

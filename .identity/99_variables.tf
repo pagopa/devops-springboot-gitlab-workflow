@@ -9,7 +9,7 @@ locals {
   location_short = "itn"
   product        = "${var.prefix}-${var.env_short}"
 
-  kv_domain_name = "dvopla-d-itn-diego-kv"
+  kv_domain_name                = "dvopla-d-itn-diego-kv"
   kv_domain_resource_group_name = "dvopla-d-itn-diego-sec-rg"
 
 }
@@ -27,7 +27,7 @@ variable "prefix" {
   default = "pagopa"
   validation {
     condition = (
-    length(var.prefix) <= 6
+      length(var.prefix) <= 6
     )
     error_message = "Max length is 6 chars."
   }
