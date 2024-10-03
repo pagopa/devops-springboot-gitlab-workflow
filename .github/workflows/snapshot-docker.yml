@@ -46,4 +46,4 @@ jobs:
             {
                 "APPS_ARGOCD": ["one-color"]
             }
-          azure-pipeline-variables: '{"system.debug": "true", "my_apps": "one-color"}'
+          azure-pipeline-variables: '{"system.debug": "true"}'
