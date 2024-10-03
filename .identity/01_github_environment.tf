@@ -21,48 +21,15 @@ resource "github_repository_environment" "github_repository_environment" {
 
 locals {
   env_secrets = {
-    "CLIENT_ID" : data.azurerm_user_assigned_identity.identity_cd_01.client_id,
     "TENANT_ID" : data.azurerm_client_config.current.tenant_id,
     "SUBSCRIPTION_ID" : data.azurerm_subscription.current.subscription_id,
-    "SUBKEY" : data.azurerm_key_vault_secret.key_vault_integration_test_subkey.value,
+    "AZUREDEVOPS_PAT" : data.azurerm_key_vault_secret.azuredevops_pat_github_action.value,
   }
   env_variables = {
-    "CONTAINER_APP_ENVIRONMENT_NAME" : local.container_app_environment.name,
-    "CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME" : local.container_app_environment.resource_group,
-    "CLUSTER_NAME" : local.aks_cluster.name,
-    "CLUSTER_RESOURCE_GROUP" : local.aks_cluster.resource_group_name,
-    "NAMESPACE" : local.domain,
   }
   repo_secrets = {
-    "SONAR_TOKEN" : data.azurerm_key_vault_secret.key_vault_sonar.value,
-    "BOT_TOKEN_GITHUB" : data.azurerm_key_vault_secret.key_vault_bot_token.value,
-    "CUCUMBER_PUBLISH_TOKEN" : data.azurerm_key_vault_secret.key_vault_cucumber_token.value,
   }
   special_repo_secrets = {
-    "CLIENT_ID_PR" : {
-      "key" : "${upper(var.env)}_CLIENT_ID_PR",
-      "value" : data.azurerm_user_assigned_identity.identity_pr_01.client_id
-    },
-    "CLIENT_ID_BRANCH" : {
-      "key" : "${upper(var.env)}_CLIENT_ID_BRANCH",
-      "value" : data.azurerm_user_assigned_identity.identity_ref_01.client_id
-    },
-    "TENANT_ID_PR" : {
-      "key" : "${upper(var.env)}_TENANT_ID_PR",
-      "value" : data.azurerm_user_assigned_identity.identity_pr_01.tenant_id
-    },
-    "TENANT_ID_BRANCH" : {
-      "key" : "${upper(var.env)}_TENANT_ID_BRANCH",
-      "value" : data.azurerm_user_assigned_identity.identity_ref_01.tenant_id
-    },
-    "SUBSCRIPTION_ID" : {
-      "key" : "${upper(var.env)}_SUBSCRIPTION_ID",
-      "value" : data.azurerm_subscription.current.subscription_id
-    },
-    "SUBKEY" : {
-      "key" : "${upper(var.env)}_SUBKEY",
-      "value" : data.azurerm_key_vault_secret.key_vault_integration_test_subkey.value
-    },
   }
 }
 

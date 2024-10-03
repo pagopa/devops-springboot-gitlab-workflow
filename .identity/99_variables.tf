@@ -1,25 +1,17 @@
 locals {
   github = {
     org        = "pagopa"
-    repository = "pagopa-payment-options-service"
+    repository = "devops-java-springboot-color"
   }
 
-  prefix         = "pagopa"
-  domain         = "payopt"
+  prefix         = "dvopla"
+  domain         = "diego"
   location_short = "itn"
   product        = "${var.prefix}-${var.env_short}"
 
-  app_name = "github-${local.github.org}-${local.github.repository}-${var.prefix}-${local.domain}-${var.env}-aks"
+  kv_domain_name = "dvopla-d-itn-diego-kv"
+  kv_domain_resource_group_name = "dvopla-d-itn-diego-sec-rg"
 
-  aks_cluster = {
-    name                = "${local.product}-${local.location_short}-${var.env}-aks"
-    resource_group_name = "${local.product}-${local.location_short}-${var.env}-aks-rg"
-  }
-
-  container_app_environment = {
-    name           = "${local.prefix}-${var.env_short}-${local.location_short}-core-tools-cae",
-    resource_group = "${local.prefix}-${var.env_short}-${local.location_short}-core-tools-rg",
-  }
 }
 
 variable "env" {

@@ -3,18 +3,15 @@ data "github_organization_teams" "all" {
   summary_only    = true
 }
 
-data "azurerm_key_vault" "key_vault" {
-  name                = "pagopa-${var.env_short}-kv"
-  resource_group_name = "pagopa-${var.env_short}-sec-rg"
-}
-
 data "azurerm_key_vault" "domain_key_vault" {
-  name                = "pagopa-${var.env_short}-itn-${local.domain}-kv"
-  resource_group_name = "pagopa-${var.env_short}-itn-${local.domain}-sec-rg"
+  name                = local.kv_domain_name
+  resource_group_name = local.kv_domain_resource_group_name
 }
 
-
-data "azurerm_key_vault_secret" "key_vault_sonar" {
-  name         = "sonar-token"
-  key_vault_id = data.azurerm_key_vault.key_vault.id
+#
+# Secrets
+#
+data "azurerm_key_vault_secret" "azuredevops_pat_github_action" {
+  name         = "azuredevops-pat-github-action"
+  key_vault_id = data.azurerm_key_vault.domain_key_vault.id
 }
