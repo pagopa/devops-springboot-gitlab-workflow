@@ -41,4 +41,4 @@ jobs:
         with:
           azure-devops-project-url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
           azure-pipeline-name: 'devopslab-diego-deploy.deploy'
-          azure-devops-token: ${{ secrets.AZURE_DEVOPS_PAT }}
+          azure-devops-token: ${{ secrets.AZUREDEVOPS_PAT }}
