@@ -37,8 +37,13 @@ jobs:
       #       org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
       - name: Trigger Azure DevOps pipeline
-        uses: Azure/pipelines@v1
+        uses: jacopocarlini/azure-pipelines@v1.3
         with:
           azure-devops-project-url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
           azure-pipeline-name: 'devopslab-diego-deploy.deploy'
           azure-devops-token: ${{ secrets.AZUREDEVOPS_PAT }}
+          azure-template-parameters: |
+            {
+                "APPS": ["one-color"],
+            }
+          azure-pipeline-variables: '{"system.debug": "true"}'
