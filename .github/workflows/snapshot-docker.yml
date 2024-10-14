@@ -63,6 +63,6 @@ jobs:
           azure-template-parameters: |
             {
                 "APPS": "[one-color]",
-                "postman-branch": "${{ env.CURRENT_BRANCH }}"
+                "POSTMAN_BRANCH": "${{ env.CURRENT_BRANCH }}"
             }
           azure-pipeline-variables: '{"system.debug": "true"}'
