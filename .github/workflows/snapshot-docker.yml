@@ -9,11 +9,7 @@ on:
       - '**.md'
       - '.**'
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to build from'
-        required: true
-        default: "${{ github.ref_name }}"
+
 
 env:
   CURRENT_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
