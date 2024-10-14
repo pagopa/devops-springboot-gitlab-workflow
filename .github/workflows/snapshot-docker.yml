@@ -2,13 +2,21 @@ name: Snapshot docker build and push
 
 on:
   push:
-    # Sequence of patterns matched against refs/heads
     branches-ignore:
       - 'main'
     paths-ignore:
       - 'CODEOWNERS'
       - '**.md'
       - '.**'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build from'
+        required: true
+        default: "${{ github.ref_name }}"
+
+env:
+  CURRENT_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
 
 jobs:
   release:
@@ -19,7 +27,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+        with:
+          ref: ${{ env.CURRENT_BRANCH }}
+
       - name: Log in to the Github Container registry
         id: docker_login
         uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 #v3.2.0
@@ -28,13 +38,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image with release version
+      - name: Set Docker tags
+        id: set_docker_tags
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "DOCKER_TAGS=ghcr.io/${{ github.repository }}:develop-latest,ghcr.io/${{ github.repository }}:snapshot" >> $GITHUB_OUTPUT
+          else
+            echo "DOCKER_TAGS=ghcr.io/${{ github.repository }}:snapshot,ghcr.io/${{ github.repository }}:snapshot-${{ env.CURRENT_BRANCH }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
         id: docker_build_push
         uses: docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c #v6.3.0
         with:
           context: .
           push: true
-          tags: "ghcr.io/${{ github.repository }}:snapshot,ghcr.io/${{ github.repository }}:snapshot-${{ github.ref_name }}"
+          tags: ${{ steps.set_docker_tags.outputs.DOCKER_TAGS }}
           labels: |
             maintainer=https://pagopa.it
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
@@ -47,7 +66,7 @@ jobs:
           azure-devops-token: ${{ secrets.AZUREDEVOPS_PAT }}
           azure-template-parameters: |
             {
-                "APPS_ARGOCD": "one-color",
-                "APPS": "[one-color]"
+                "APPS": "[one-color]",
+                "postman-branch": "${{ env.CURRENT_BRANCH }}"
             }
           azure-pipeline-variables: '{"system.debug": "true"}'
