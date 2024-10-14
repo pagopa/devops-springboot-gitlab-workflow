@@ -10,7 +10,7 @@ public class MySystemLogs {
 
     @EventListener
     public void onStartup(ApplicationReadyEvent event) {
-        System.out.println("🚀 We are ready ----------------------- ✅✅✅");
+        System.out.println("🚀 We are ready ----------------------- ✅✅✅4️⃣1️⃣");
      }
 
     @EventListener
