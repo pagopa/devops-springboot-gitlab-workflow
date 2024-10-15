@@ -24,5 +24,4 @@ jobs:
       azure_pipeline_name: 'devopslab-diego-deploy.deploy'
       enable_azure_devops_step: true
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AZUREDEVOPS_PAT: ${{ secrets.AZUREDEVOPS_PAT }}
