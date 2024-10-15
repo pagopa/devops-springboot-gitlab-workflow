@@ -15,13 +15,22 @@ env:
 
 jobs:
   spac-flow-docker-snapshot:
-    uses: ./.github/workflows/snapshot-template.yml
-    with:
-      current_branch: ${{ github.ref_name }}
-      environment: dev
-      azure_devops_apps: "[one-color]"
-      azure_devops_project_url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
-      azure_pipeline_name: 'devopslab-diego-deploy.deploy'
-      enable_azure_devops_step: true
-    secrets:
-      AZUREDEVOPS_PAT: ${{ secrets.AZUREDEVOPS_PAT }}
+    runs-on: ubuntu-22.04
+    environment: dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.CURRENT_BRANCH }}
+
+      - name: Run Snapshot Docker Build and Push
+        uses: pagopa/github-actions-template/spac-flow-docker-snapshot@spac-flow-docker-snapshot
+        with:
+          current_branch: ${{ github.ref_name }}
+          environment: dev
+          azure_devops_apps: "[one-color]"
+          azure_devops_project_url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
+          azure_pipeline_name: 'devopslab-diego-deploy.deploy'
+          enable_azure_devops_step: 'true'
+        env:
+          AZUREDEVOPS_PAT: ${{ secrets.AZUREDEVOPS_PAT }}
