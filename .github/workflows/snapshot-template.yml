@@ -34,7 +34,7 @@ on:
 
 jobs:
   spac-flow-docker-snapshot-template:
-    name: Snapshot Docker && Triggers
+    name: Snapshot Docker & Triggers
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
 
