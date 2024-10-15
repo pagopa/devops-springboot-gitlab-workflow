@@ -1,4 +1,4 @@
-name: Snapshot Docker Build and Push Template
+name: TEMPLATE-Snapshot Docker Build and Push
 
 on:
   workflow_call:

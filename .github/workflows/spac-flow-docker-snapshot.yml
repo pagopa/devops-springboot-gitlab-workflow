@@ -1,4 +1,4 @@
-name: Snapshot docker build and push
+name: SPAC Snapshot docker build and push
 
 on:
   push:
