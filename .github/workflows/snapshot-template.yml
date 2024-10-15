@@ -1,4 +1,4 @@
-name: TEMPLATE-Snapshot Docker Build and Push
+name: SPAC flow docker snapshot
 
 on:
   workflow_call:
