@@ -15,6 +15,10 @@ on:
         default: |
           maintainer=https://pagopa.it
           org.opencontainers.image.source=https://github.com/${{ github.repository }}
+      enable_azure_devops_step:
+        required: false
+        type: boolean
+        default: false
       azure_devops_apps:
         required: false
         type: string
@@ -24,17 +28,13 @@ on:
       azure_pipeline_name:
         required: false
         type: string
-      enable_azure_devops_step:
-        required: false
-        type: boolean
-        default: false
     secrets:
       AZUREDEVOPS_PAT:
         required: false
 
 jobs:
-  snapshot-docker:
-    name: Snapshot Docker
+  spac-flow-docker-snapshot-template:
+    name: Snapshot Docker && Triggers
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
 

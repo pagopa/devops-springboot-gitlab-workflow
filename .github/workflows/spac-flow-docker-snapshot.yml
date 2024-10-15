@@ -14,7 +14,7 @@ env:
   CURRENT_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
 
 jobs:
-  call-snapshot-template:
+  spac-flow-docker-snapshot:
     uses: ./.github/workflows/snapshot-template.yml
     with:
       current_branch: ${{ github.ref_name }}
