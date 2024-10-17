@@ -1,4 +1,4 @@
-name: payments snapshot docker build and push
+name: payments release
 
 on:
   push:
@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  payments-flow-docker-snapshot:
+  payments-flow-release:
     runs-on: ubuntu-22.04
     environment: dev
     steps:
@@ -23,7 +23,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
-      - name: 📦 Run Snapshot Docker Build/Push & Trigger
+      - name: 🚀 release + docker + azdo
         # https://github.com/pagopa/github-actions-template/releases/tag/v1.16.0
         uses: pagopa/github-actions-template/payments-flow-release@payments-release
         with:
