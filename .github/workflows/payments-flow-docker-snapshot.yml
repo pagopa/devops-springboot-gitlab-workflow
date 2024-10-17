@@ -14,7 +14,7 @@ env:
   CURRENT_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
 
 jobs:
-  payments-flow-docker-snapshot:
+  spac-flow-docker-snapshot:
     runs-on: ubuntu-22.04
     environment: dev
     steps:
@@ -25,8 +25,8 @@ jobs:
           ref: ${{ env.CURRENT_BRANCH }}
 
       - name: 📦 Run Snapshot Docker Build/Push & Trigger
-        # https://github.com/pagopa/github-actions-template/releases/tag/v1.16.0 
-        uses: pagopa/github-actions-template/payments-flow-docker-snapshot@fix-name
+        # https://github.com/pagopa/github-actions-template/releases/tag/v1.16.0
+        uses: pagopa/github-actions-template/spac-flow-docker-snapshot@2f5eb6b40e97186d217f7441dbe83ac611a63636
         with:
           current_branch: ${{ github.ref_name }}
           enable_azure_devops_step: 'true'
