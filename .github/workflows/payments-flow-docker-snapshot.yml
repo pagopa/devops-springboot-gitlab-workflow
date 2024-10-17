@@ -1,4 +1,4 @@
-name: SPAC Snapshot docker build and push
+name: 📦 Payments Snapshot docker build and push
 
 on:
   push:
@@ -14,7 +14,7 @@ env:
   CURRENT_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
 
 jobs:
-  spac-flow-docker-snapshot:
+  payments-flow-docker-snapshot:
     runs-on: ubuntu-22.04
     environment: dev
     steps:
@@ -26,7 +26,7 @@ jobs:
 
       - name: 📦 Run Snapshot Docker Build/Push & Trigger
         # https://github.com/pagopa/github-actions-template/releases/tag/v1.16.0
-        uses: pagopa/github-actions-template/spac-flow-docker-snapshot@2f5eb6b40e97186d217f7441dbe83ac611a63636
+        uses: pagopa/github-actions-template/payments-flow-docker-snapshot@payments-release
         with:
           current_branch: ${{ github.ref_name }}
           enable_azure_devops_step: 'true'
@@ -34,3 +34,8 @@ jobs:
           azure_devops_project_url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
           azure_devops_pipeline_name: 'devopslab-diego-deploy.deploy'
           azure_devops_pat: ${{ secrets.AZUREDEVOPS_PAT }}
+          azure_template_parameters: |
+            {
+              "APPS": "[one-color]",
+              "POSTMAN_BRANCH": "${{ github.ref_name }}"
+            }
