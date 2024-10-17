@@ -26,7 +26,7 @@ jobs:
 
       - name: 📦 Run Snapshot Docker Build/Push & Trigger
         # https://github.com/pagopa/github-actions-template/releases/tag/v1.16.0
-        uses: pagopa/github-actions-template/payments-flow-docker-snapshot@payments-release
+        uses: pagopa/github-actions-template/payments-flow-docker-snapshot@main
         with:
           current_branch: ${{ github.ref_name }}
           enable_azure_devops_step: 'true'
