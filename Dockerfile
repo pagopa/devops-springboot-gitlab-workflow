@@ -6,7 +6,7 @@ COPY . .
 RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
 
 # Runtime stage
-FROM amazoncorretto:21-alpine3.19
+FROM amazoncorretto:21-alpine3.20
 
 WORKDIR /app
 
@@ -28,20 +28,20 @@ RUN chown -R javauser:javauser /app
 USER javauser
 
 # Configure JVM options for containerized environment
-ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 \
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 \
     -XX:InitialRAMPercentage=50.0 \
     -XX:+UseG1GC \
     -Xlog:gc*:/app/gc.log \
     -Djava.security.egd=file:/dev/./urandom \
     -Duser.timezone=UTC"
 
+# Application Insights configuration
+ENV APPLICATIONINSIGHTS_CONNECTION_STRING=""
+ENV APPLICATIONINSIGHTS_ROLE_NAME="devops-java-springboot-color"
+
 # Configure container
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
-ENTRYPOINT ["java", \
-            "-javaagent:/app/applicationinsights-agent.jar", \
-            "${JAVA_OPTS}", \
-            "-jar", \
-            "/app/app.jar"]
+ENTRYPOINT ["java", "-javaagent:/app/applicationinsights-agent.jar", "-jar", "/app/app.jar"]
