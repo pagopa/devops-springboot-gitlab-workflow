@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <property name="LOGS" value="./logs" />
+    <springProperty scope="context" name="appName"
+                    source="spring.application.name"/>
 
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable</Pattern>
-        </layout>
-    </appender>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [${appName:-}] [%X{userId:-}] [%X{traceId:-}] %-5level [%15.15t] [%-40.40logger{39}] - %msg%n"/>
+    <property name="AUDIT_LOG_PATTERN"
+              value="%msg"/>
 
-    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/spring-boot-logger.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>3GB</totalSizeCap>
-        </rollingPolicy>
     </appender>
 
-    <appender name="AsyncRollingFile" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="RollingFile" />
-        <queueSize>512</queueSize>
+    <appender name="SYNC_AUDIT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AUDIT"
+              class="ch.qos.logback.classic.AsyncAppender">
+        <neverBlock>true</neverBlock>
+        <queueSize>20000</queueSize>
         <discardingThreshold>0</discardingThreshold>
-        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="SYNC_AUDIT"/>
     </appender>
 
-    <!-- LOG everything at INFO level -->
+    <appender name="ASYNC_STDOUT"
+              class="ch.qos.logback.classic.AsyncAppender">
+        <neverBlock>true</neverBlock>
+        <queueSize>20000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="STDOUT"/>
+    </appender>
+
+    <logger name="AUDIT" additivity="false">
+        <appender-ref ref="AUDIT"/>
+    </logger>
+
     <root level="INFO">
-        <appender-ref ref="Console" />
-        <appender-ref ref="AsyncRollingFile" />
+        <appender-ref ref="ASYNC_STDOUT"/>
     </root>
-
-    <logger name="com.baeldung" level="trace" additivity="false">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="Console" />
-    </logger>
-
-    <logger name="it.pagopa.devops" level="DEBUG" additivity="false">
-        <appender-ref ref="Console" />
-        <appender-ref ref="AsyncRollingFile" />
-    </logger>
 
 </configuration>
