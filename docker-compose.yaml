@@ -7,7 +7,7 @@ services:
       context: .
     container_name: devops-java-springboot-color
     restart: always
-    environment:
-      - MY_APP_COLOR=red
+    # environment:
+    #   - MY_APP_COLOR=red
     ports:
       - "8080:8080"
