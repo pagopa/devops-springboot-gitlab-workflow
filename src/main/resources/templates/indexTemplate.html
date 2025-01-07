@@ -297,7 +297,7 @@
                Array.from(rows).forEach(row => {
                    const key = row.querySelector('.env-key').textContent.toLowerCase();
                    const value = row.querySelector('.env-value').textContent.toLowerCase();
-                   
+
                    if (key.includes(searchTerm) || value.includes(searchTerm)) {
                        row.classList.remove('hidden');
                        hasVisibleRows = true;

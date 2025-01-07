@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 @Controller
 public class RootController {
     private static final Logger log = LoggerFactory.getLogger(RootController.class);
-    
-    private static final List<String> COLORS = List.of("red", "green", "blue", 
+
+    private static final List<String> COLORS = List.of("red", "green", "blue",
         "darkblue", "pink", "lightgoldenrodyellow", "black");
 
     @Value("${MY_APP_COLOR:}")
@@ -29,30 +29,30 @@ public class RootController {
     @GetMapping("/")
     public ModelAndView passParametersWithModelAndView() throws UnknownHostException {
         log.info("🚀 Starting to process request");
-        
+
         String selectedColor = getOneColor(myAppColor);
         log.debug("🎨 Selected color: {}", selectedColor);
-        
+
         String hostname = InetAddress.getLocalHost().getHostName();
         log.debug("🏠 Hostname: {}", hostname);
-        
+
         Map<String, String> environments = envs();
         log.debug("⚙️ Loaded {} environment variables", environments.size());
 
         PageData pageData = new PageData(selectedColor, hostname, environments);
-        
+
         ModelAndView modelAndView = new ModelAndView("indexTemplate");
         modelAndView.addObject("color", pageData.color());
         modelAndView.addObject("hostname", pageData.hostname());
         modelAndView.addObject("envs", pageData.envs());
-        
+
         log.info("✅ Request processed successfully");
         return modelAndView;
     }
 
     private String getOneColor(String choiceColor) {
         log.debug("🎯 Selecting color. User choice: {}", choiceColor);
-        
+
         if (choiceColor == null || choiceColor.isEmpty()) {
             log.debug("🎯 User choice is empty, selecting random");
             return getRandomColor();
@@ -65,7 +65,7 @@ public class RootController {
                     log.warn("⚠️ Requested color {} not found, selecting random", choiceColor);
                     return getRandomColor();
                 });
-        }   
+        }
     }
 
     private String getRandomColor() {
