@@ -1,0 +1,41 @@
+server:
+  port: 8080
+  shutdown: graceful
+  compression:
+    enabled: true
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: devops-java-springboot-color
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    it.pagopa.devops: DEBUG
+  file:
+    name: ${java.io.tmpdir}/application.log

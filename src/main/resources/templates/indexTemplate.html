@@ -1,38 +1,314 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<title>Hello from PagoPA</title>
-<body th:style="'background:' + ${color} + ';'"></body>
-  <div style="color: #e4e4e4;
-      text-align:  center;
-      height: 90px;
-      vertical-align:  middle;">
+<head>
+   <title>Hello from PagoPA</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <style>
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+       }
 
-    <div style="font-size: 3em; display: inline-flex;">
-      <div>hostname: </div>
-      <div th:text="${hostname}">hostname</div>
-    </div>
-    <br/>
-  </div>
+       body {
+           min-height: 100vh;
+           display: flex;
+           flex-direction: column;
+           gap: 2rem;
+           padding: 2rem;
+           transition: background-color 0.5s ease;
+       }
 
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
+       .header {
+           background: rgba(255, 255, 255, 0.1);
+           padding: 2rem;
+           border-radius: 12px;
+           backdrop-filter: blur(10px);
+           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+           position: relative;
+           overflow: hidden;
+           max-width: 1200px;
+           margin: 0 auto;
+           width: 100%;
+       }
 
-  <div style="
-  text-align:  center;
-  height: 90px;
-  vertical-align:  middle;">
+       .header::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           height: 4px;
+           background: linear-gradient(90deg, #00FF00, #0066CC, #FF3366);
+           animation: gradient 3s ease infinite;
+           background-size: 200% auto;
+       }
 
-    <div style="font-size: 3em; display: inline-flex;">Env variables</div>
-    <table style="text-align: left; padding: 50px; padding-top: 10px;">
-      <tr th:each="instance : ${envs}">
-        <td style="font-weight: bold;" th:text="${instance.key}">keyvalue</td>
-        <td th:text="${instance.value}">value</td>
-      </tr>
-    </table>
-  </div>
+       @keyframes gradient {
+           0% { background-position: 0% 50%; }
+           50% { background-position: 100% 50%; }
+           100% { background-position: 0% 50%; }
+       }
 
-</div>
+       .hostname-container {
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           gap: 1rem;
+           color: #ffffff;
+           font-size: 2.5rem;
+           font-weight: 600;
+           text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+       }
+
+       .status-badge {
+           position: absolute;
+           top: 1rem;
+           right: 1rem;
+           padding: 0.5rem 1rem;
+           border-radius: 20px;
+           background: #4CAF50;
+           color: white;
+           font-size: 0.875rem;
+           display: flex;
+           align-items: center;
+           gap: 0.5rem;
+       }
+
+       .status-badge::before {
+           content: '';
+           width: 8px;
+           height: 8px;
+           background: #ffffff;
+           border-radius: 50%;
+           animation: pulse 1.5s infinite;
+       }
+
+       @keyframes pulse {
+           0% { transform: scale(0.95); opacity: 0.5; }
+           50% { transform: scale(1.05); opacity: 0.8; }
+           100% { transform: scale(0.95); opacity: 0.5; }
+       }
+
+       .env-container {
+           background: rgba(255, 255, 255, 0.95);
+           border-radius: 12px;
+           padding: 2rem;
+           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+           transition: transform 0.3s ease;
+           max-width: 1200px;
+           margin: 0 auto;
+           width: 100%;
+       }
+
+       .search-container {
+           margin-bottom: 2rem;
+           width: 100%;
+           max-width: 600px;
+           margin: 0 auto 2rem auto;
+           position: relative;
+       }
+
+       .search-input {
+           width: 100%;
+           padding: 1rem 1.5rem;
+           font-size: 1rem;
+           border: 2px solid rgba(0, 102, 204, 0.2);
+           border-radius: 8px;
+           background: rgba(255, 255, 255, 0.9);
+           backdrop-filter: blur(5px);
+           transition: all 0.3s ease;
+           outline: none;
+           color: #2d3748;
+           padding-left: 3rem;
+       }
+
+       .search-input:focus {
+           border-color: #0066CC;
+           box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+       }
+
+       .search-input::placeholder {
+           color: #a0aec0;
+       }
+
+       .search-icon {
+           position: absolute;
+           left: 1rem;
+           top: 50%;
+           transform: translateY(-50%);
+           color: #a0aec0;
+           pointer-events: none;
+       }
+
+       .env-title {
+           font-size: 2rem;
+           font-weight: 600;
+           color: #333;
+           margin-bottom: 1.5rem;
+           text-align: center;
+       }
+
+       .env-table-container {
+           width: 100%;
+           overflow-x: auto;
+       }
+
+       .env-table {
+           width: 100%;
+           border-collapse: separate;
+           border-spacing: 0;
+           margin: 0 auto;
+       }
+
+       .env-table tr {
+           transition: all 0.3s ease;
+       }
+
+       .env-table tr:hover {
+           background-color: rgba(0, 102, 204, 0.05);
+       }
+
+       .env-table td {
+           padding: 1rem 1.5rem;
+           border-bottom: 1px solid #eee;
+           font-size: 1.1rem;
+           line-height: 1.5;
+       }
+
+       .env-key {
+           font-weight: 600;
+           color: #2d3748;
+           width: 30%;
+           min-width: 300px;
+           white-space: nowrap;
+       }
+
+       .env-value {
+           color: #4a5568;
+           width: 70%;
+           word-break: break-all;
+           font-family: 'Monaco', 'Courier New', monospace;
+           padding-left: 2rem;
+       }
+
+       .footer {
+           text-align: center;
+           color: rgba(255, 255, 255, 0.8);
+           font-size: 0.875rem;
+           margin-top: auto;
+           padding: 1rem;
+           max-width: 1200px;
+           margin: 0 auto;
+           width: 100%;
+       }
+
+       .no-results {
+           text-align: center;
+           padding: 2rem;
+           color: #666;
+           font-style: italic;
+           display: none;
+       }
+
+       tr.hidden {
+           display: none;
+       }
+
+       @media (max-width: 1024px) {
+           body {
+               padding: 1rem;
+           }
+
+           .env-table td {
+               padding: 0.75rem 1rem;
+           }
+
+           .env-key {
+               min-width: 200px;
+           }
+       }
+
+       @media (max-width: 768px) {
+           .hostname-container {
+               font-size: 1.8rem;
+               flex-direction: column;
+               text-align: center;
+           }
+
+           .env-title {
+               font-size: 1.5rem;
+           }
+
+           .env-table td {
+               padding: 0.5rem;
+               font-size: 0.9rem;
+           }
+
+           .search-container {
+               max-width: 100%;
+           }
+       }
+   </style>
+</head>
+<body th:style="'background:' + ${color} + ';'">
+   <header class="header">
+       <div class="status-badge">System Online</div>
+       <div class="hostname-container">
+           <div>hostname:</div>
+           <div th:text="${hostname}">hostname</div>
+       </div>
+   </header>
+
+   <main class="env-container">
+       <h2 class="env-title">Environment Variables</h2>
+       <div class="search-container">
+           <span class="search-icon">🔍</span>
+           <input type="text" class="search-input" placeholder="Search variables..." id="searchInput">
+       </div>
+       <div class="env-table-container">
+           <table class="env-table">
+               <tr th:each="instance : ${envs}">
+                   <td class="env-key" th:text="${instance.key}">keyvalue</td>
+                   <td class="env-value" th:text="${instance.value}">value</td>
+               </tr>
+           </table>
+           <div class="no-results">No matching variables found</div>
+       </div>
+   </main>
+
+   <footer class="footer">
+       <p>© 2025 PagoPA S.p.A. - Last Updated: <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}">date</span></p>
+   </footer>
+
+   <script>
+       document.addEventListener('DOMContentLoaded', function() {
+           const searchInput = document.getElementById('searchInput');
+           const table = document.querySelector('.env-table');
+           const rows = table.getElementsByTagName('tr');
+           const noResults = document.querySelector('.no-results');
+
+           searchInput.addEventListener('input', function() {
+               const searchTerm = this.value.toLowerCase();
+               let hasVisibleRows = false;
+
+               Array.from(rows).forEach(row => {
+                   const key = row.querySelector('.env-key').textContent.toLowerCase();
+                   const value = row.querySelector('.env-value').textContent.toLowerCase();
+
+                   if (key.includes(searchTerm) || value.includes(searchTerm)) {
+                       row.classList.remove('hidden');
+                       hasVisibleRows = true;
+                   } else {
+                       row.classList.add('hidden');
+                   }
+               });
+
+               noResults.style.display = hasVisibleRows ? 'none' : 'block';
+           });
+       });
+   </script>
+</body>
+</html>
