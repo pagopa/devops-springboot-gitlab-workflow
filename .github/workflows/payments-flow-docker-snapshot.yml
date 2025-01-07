@@ -29,7 +29,7 @@ jobs:
         uses: pagopa/github-actions-template/payments-flow-docker-snapshot@37569377fa759368a01c1e7f40700b4118d65d0c
         with:
           current_branch: ${{ github.ref_name }}
-          enable_azure_devops_step: 'true'
+          enable_azure_devops_step: 'false'
           azure_devops_apps: "[one-color]"
           azure_devops_project_url: 'https://dev.azure.com/pagopaspa/devopslab-projects'
           azure_devops_pipeline_name: 'devopslab-diego-deploy.deploy'
