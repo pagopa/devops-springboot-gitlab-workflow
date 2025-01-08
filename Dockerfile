@@ -15,7 +15,10 @@ RUN apk add --no-cache \
     curl \
     tzdata \
     && addgroup -S javauser \
-    && adduser -S javauser -G javauser
+    && adduser -S javauser -G javauser \
+    # Set system timezone
+    && cp /usr/share/zoneinfo/Europe/Rome /etc/localtime \
+    && echo "Europe/Rome" > /etc/timezone
 
 # Copy application bundle
 COPY --from=builder /build/target/*.jar app.jar
@@ -31,9 +34,8 @@ USER javauser
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 \
     -XX:InitialRAMPercentage=50.0 \
     -XX:+UseG1GC \
-    -Xlog:gc*:/app/gc.log \
     -Djava.security.egd=file:/dev/./urandom \
-    -Duser.timezone=UTC"
+    -Duser.timezone=Europe/Rome"
 
 # Application Insights configuration
 ENV APPLICATIONINSIGHTS_CONNECTION_STRING=""
