@@ -4,7 +4,7 @@ server:
   compression:
     enabled: true
   tomcat:
-    additional-tld-skip-patterns: 
+    additional-tld-skip-patterns:
       - applicationinsights-*.jar
       - applicationinsights-core-*.jar
       - applicationinsights-web-*.jar
