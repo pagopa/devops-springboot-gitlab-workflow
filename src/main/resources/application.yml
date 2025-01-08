@@ -35,7 +35,8 @@ management:
 logging:
   level:
     root: INFO
-    org.springframework: DEBUG
+    org.springframework: INFO
     it.pagopa.devops: DEBUG
   file:
-    name: ${java.io.tmpdir}/application.log
+    name: /app/logs/application.log
+    path: /app/logs

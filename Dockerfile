@@ -20,6 +20,10 @@ RUN apk add --no-cache \
     && cp /usr/share/zoneinfo/Europe/Rome /etc/localtime \
     && echo "Europe/Rome" > /etc/timezone
 
+# Create log directory and set permissions
+RUN mkdir -p /app/logs && \
+    chown -R javauser:javauser /app/logs
+
 # Copy application bundle
 COPY --from=builder /build/target/*.jar app.jar
 
@@ -40,6 +44,9 @@ ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75.0 \
 # Application Insights configuration
 ENV APPLICATIONINSIGHTS_CONNECTION_STRING=""
 ENV APPLICATIONINSIGHTS_ROLE_NAME="devops-java-springboot-color"
+
+# Add volume for logs
+VOLUME /app/logs
 
 # Configure container
 EXPOSE 8080
