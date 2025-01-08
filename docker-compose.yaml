@@ -14,7 +14,7 @@ services:
       - LOGGING_LEVEL_ROOT=INFO
       - LOGGING_LEVEL_IT_PAGOPA_DEVOPS=DEBUG
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK=INFO
-      - MY_APP_COLOR=red
+      # - MY_APP_COLOR=red
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
