@@ -1,13 +1,23 @@
 version: "3.8"
 services:
   devops-java-springboot-color:
-    # image: "ghcr.io/pagopa/devops-java-springboot-color:snapshot-upgrade-java-21"
     build:
       dockerfile: ./Dockerfile
       context: .
     container_name: devops-java-springboot-color
     restart: always
-    # environment:
-    #   - MY_APP_COLOR=red
     ports:
       - "8080:8080"
+    volumes:
+      - ${PWD}/logs:/app/logs
+    environment:
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_IT_PAGOPA_DEVOPS=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK=INFO
+      - MY_APP_COLOR=red
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
