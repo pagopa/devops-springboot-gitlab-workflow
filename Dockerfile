@@ -1,12 +1,12 @@
 # Build stage
-FROM maven:3.9-amazoncorretto-21 AS builder
+FROM maven:3.9-amazoncorretto-21@sha256:17ae7b5533254592b8ab1a159cdb63777a692eab49754b708711854c0a68d6a4 AS builder
 
 WORKDIR /build
 COPY . .
 RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
 
 # Runtime stage
-FROM amazoncorretto:21-alpine3.20
+FROM amazoncorretto:21-alpine3.20@sha256:b66d1d797ca711a537667d22aea4713577338bd161447c91efaa61a8e6855981
 
 WORKDIR /app
 
